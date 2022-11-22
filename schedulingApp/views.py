@@ -2,6 +2,6 @@ from django.shortcuts import render
 from django.views import View
 
 
-class Home(View):
+class Login(View):
     def get(self, request):
-        return render(request, "home.html", {})
+        return render(request, "login.html", {})
