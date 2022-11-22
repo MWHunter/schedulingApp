@@ -16,7 +16,7 @@ class CreateAccount:
 
 
 class EditAccount:
-    #TODO add more test cases
+    # add more test cases
     # EMail Phone Address FirstName LastName PermissionLevel OfficeHours
 
     # Implementation: Method that takes all fields as value with
@@ -45,7 +45,7 @@ class EditAccount:
     def test_invalidOfficeHours(self):
         pass
 
-    def test_editPermissionLevel(self): # TODO if changing perm level is valid, add test_invalidPermLevel
+    def test_editPermissionLevel(self): # if changing perm level is valid, add test_invalidPermLevel
         pass
 
     def test_toSameValue(self):
