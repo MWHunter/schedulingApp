@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New User</title>
+</head>
+<body>
+    <!--Sidebar navigation-->
+    <!--TODO Bootstrap styling-->
+    <div class="sidenav">
+        <a href="#">Home</a>
+        <a href="#">Logout</a>
+    </div>
+    <!--New user form-->
+    <div class="newUser">
+        <h3> Create New User</h3>
+        <form action="#">
+            <label for="newAccountFirstName">First Name</label><br>
+            <input type="text" id="newAccountFirstName" name="newAccountFirstName"><br>
+            <label for="newAccountLastName">Last Name</label><br>
+            <input type="text" id="newAccountLastName" name="newAccountLastName"><br>
+            <label for="newAccountEmail">Email Address</label><br>
+            <input type="text" id="newAccountEmail" name="newAccountEmail"><br>
+            <label for="newAccountHomeAddress">Home Address</label><br>
+            <input type="text" id="newAccountHomeAddress" name="newAccountHomeAddress"><br>
+            <label for="newAccountPhone">Phone Number</label><br>
+            <input type="text" id="newAccountPhone" name="newAccountPhone"><br><br>
+            <form action="#">
+                <label for="newAccountRole">User Role</label>
+                <select name="newAccountRole" id="newAccountRole">
+                    <option value="supervisor">Supervisor</option>
+                    <option value="instructor">Instructor</option>
+                    <option value="ta">TA</option>
+                </select>
+            </form>
+        <br>
+        <input type="submit" value="Create User">
+        <a href="home.html">Cancel</a>
+      </form>
+    </div>
+</body>
+</html>
