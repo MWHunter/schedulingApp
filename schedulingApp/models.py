@@ -2,10 +2,11 @@ from django.db import models
 
 
 class User(models.Model):
-    class PermissionLevel(models.TextChoices):
-        TA = 'TA'
-        PROFESSOR = 'PROFESSOR'
-        ADMIN = 'ADMIN'
+    PermissionLevel = (
+        ('ta', 'TA'),
+        ('professor', 'Professor'),
+        ('admin', 'Admin')
+    )
 
     emailAddress = models.CharField(max_length=32)
     phoneNumber = models.CharField(max_length=16)
@@ -14,7 +15,7 @@ class User(models.Model):
     lastName = models.CharField(max_length=32)
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
-                                  default=PermissionLevel.TA)
+                                  default=PermissionLevel[0])
 
 
 class Course(models.Model):
@@ -26,7 +27,6 @@ class Assignment(models.Model):
     description = models.CharField(max_length=65536)
 
 
-# Many TA's can be assigned to a single course
 class CourseToAssignedTAEntry(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
     assignedTA = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=False)
