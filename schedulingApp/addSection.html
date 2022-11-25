@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Course</title>
+</head>
+<body>
+    <!--Sidebar navigation-->
+    <!--TODO Bootstrap styling-->
+    <div class="sidenav">
+        <a href="#">Home</a>
+        <a href="#">Logout</a>
+    </div>
+    <!--Add section form-->
+    <div class="addSection">
+        <h3> Add New Section</h3>
+        <form action="#">
+            <!--radio buttons for lab vs lecture-->
+            <b>Section Type</b><br>
+            <input type="radio" id="lab" name="sectionType" value="lab">
+            <label for="lab">Lab</label><br>
+            <input type="radio" id="lecture" name="sectionType" value="lecture">
+            <label for="lecture">Lecture</label><br><br>
+            <label for="newSectionNumber">Section Number</label><br>
+            <input type="text" id="newSectionNumber" name="newSectionNumber"><br><br>
+            <!--This probably requires a better solution for lab meeting time-->
+            <form action="#">
+                <label for="newSectionTime">Section Meeting Time</label>
+                <select name="newSectionTime" id="newSectionTime">
+                    <option value="monday10">Monday 1000</option>
+                    <option value="monday11">Monday 1100</option>
+                    <option value="monday12">Monday 1200</option>
+                </select>
+            </form><br>
+            <!--TODO integrate with Django to be able to select associated course-->
+            <form action="#">
+                <label for="newAccountRole">Course ID</label>
+                <select name="newAccountRole" id="newAccountRole">
+                    <option value="course1">Placeholder 1</option>
+                    <option value="course2">Placeholder 2</option>
+                    <option value="ta">TA</option>
+                </select>
+            </form><br>
+            <!--TODO integrate with Django to be able to select associated instructor-->
+            <form action="#">
+                <label for="newSectionInstructor">Instructor</label>
+                <select name="newSectionInstructor" id="newSectionInstructor">
+                    <option value="ta1">TA 1</option>
+                    <option value="ta2">TA 2</option>
+                    <option value="professor1">Professor</option>
+                </select>
+            </form>
+        <br>
+        <input type="submit" value="Create Section">
+        <a href="home.html">Cancel</a>
+      </form>
+    </div>
+</body>
+</html>
