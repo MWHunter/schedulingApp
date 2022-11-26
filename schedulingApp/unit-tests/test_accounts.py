@@ -1,6 +1,7 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 
 
+# Fields: EMail Phone Address FirstName LastName PermissionLevel OfficeHours
 class CreateAccount:
     def test_emptyUsernameAndPassword(self):
         pass
@@ -11,13 +12,15 @@ class CreateAccount:
     def test_emptyPassword(self):
         pass
 
+    def test_conflictingUsername(self):
+        pass
+
     def test_validInfo(self):
         pass
 
 
 class EditAccount:
     # add more test cases
-    # EMail Phone Address FirstName LastName PermissionLevel OfficeHours
 
     # Implementation: Method that takes all fields as value with
     # default value as an invalid character signifying no change
@@ -45,10 +48,14 @@ class EditAccount:
     def test_invalidOfficeHours(self):
         pass
 
-    def test_editPermissionLevel(self): # if changing perm level is valid, add test_invalidPermLevel
-        pass
+    # if changing perm level is valid, add the following 2 methods
+    # def test_invalidPermLevel(self):
+    #     pass
+    # def test_editPermissionLevel(self):
+    #     pass
 
-    def test_toSameValue(self):
+    # To email used in another account
+    def test_toConflictingEmail(self):
         pass
 
     def test_noChange(self):
