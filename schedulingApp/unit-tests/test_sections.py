@@ -2,7 +2,7 @@ from django.test import TestCase
 
 
 # Fields: course, title, assignedTA
-class CreateSection:
+class CreateSection(TestCase):
     def test_emptyFields(self):
         pass
 
@@ -25,7 +25,7 @@ class CreateSection:
         pass
 
 
-class EditSection:
+class EditSection(TestCase):
     def test_blankFields(self):
         pass
 
@@ -51,7 +51,7 @@ class EditSection:
         pass
 
 
-class DeleteSection:
+class DeleteSection(TestCase):
     def test_sectionNotFound(self):
         pass
 

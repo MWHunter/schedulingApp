@@ -2,7 +2,7 @@ from django.test import TestCase
 
 
 # Fields: Title
-class CreateCourse:
+class CreateCourse(TestCase):
     def test_emptyTitle(self):
         pass
 
@@ -13,7 +13,7 @@ class CreateCourse:
         pass
 
 
-class EditCourse:
+class EditCourse(TestCase):
     def test_blankTitle(self):
         pass
 
@@ -30,7 +30,7 @@ class EditCourse:
         pass
 
 
-class DeleteCourse:
+class DeleteCourse(TestCase):
     def test_courseNotFound(self):
         pass
 

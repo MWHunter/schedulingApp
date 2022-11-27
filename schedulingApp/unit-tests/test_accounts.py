@@ -2,7 +2,7 @@ from django.test import TestCase
 
 
 # Fields: EMail Phone Address FirstName LastName PermissionLevel OfficeHours
-class CreateAccount:
+class CreateAccount(TestCase):
     def test_emptyUsernameAndPassword(self):
         pass
 
@@ -19,7 +19,7 @@ class CreateAccount:
         pass
 
 
-class EditAccount:
+class EditAccount(TestCase):
     # add more test cases
 
     # Implementation: Method that takes all fields as value with
@@ -65,7 +65,7 @@ class EditAccount:
         pass
 
 
-class DeleteAccount:
+class DeleteAccount(TestCase):
     def test_accountNotFound(self):
         pass
 
