@@ -1,21 +1,37 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
-class User(models.Model):
+# Confused about OneToOneFields and how to use them?
+# The code was borrowed from this URL
+# https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
+class Profile(models.Model):
     PermissionLevel = (
         ('ta', 'TA'),
         ('professor', 'Professor'),
         ('admin', 'Admin')
     )
 
-    emailAddress = models.CharField(max_length=32)
+    # email, firstName, lastName, group see django object
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     phoneNumber = models.CharField(max_length=16)
     homeAddress = models.CharField(max_length=64)
-    firstName = models.CharField(max_length=32)
-    lastName = models.CharField(max_length=32)
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
                                   default=PermissionLevel[0])
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
 
 class Course(models.Model):

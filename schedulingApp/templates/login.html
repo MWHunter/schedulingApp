@@ -9,7 +9,8 @@
 <body>
     <!--Login interface-->
     <h2>Welcome to the UWM TA Scheduling App!</h2>
-    <form action="#">
+    <form action="#" method="post">
+        {% csrf_token %}
         <label for="loginID">Username</label><br>
         <input type="text" id="loginID" name="loginID"><br>
         <label for="loginPassword">Password</label><br>
