@@ -20,6 +20,26 @@ class User(models.Model):
 
 class Course(models.Model):
     title = models.CharField(max_length=32)
+    semester = models.CharField(max_length=32)
+
+    #constructor/destructor
+    def __init__(self, title, semester):
+        pass
+
+    def __del__(self):
+        pass
+
+    #getters/setters
+    def getTitle(self):
+        pass
+
+    def getSemester(self):
+        pass
+    def setTitle(self, newTitle):
+        pass
+
+    def setSemeseter(self, newSemester):
+        pass
 
 
 class Assignment(models.Model):
