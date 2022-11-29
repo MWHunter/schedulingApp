@@ -1,28 +1,39 @@
 from django.test import TestCase
+from schedulingApp.models import Section
 
 
 # Fields: course, title, assignedTA
 class CreateSection(TestCase):
-    def test_emptyFields(self):
-        pass
+    def setUp(self) -> None:
+        pass #TODO set up model course for valid foreign key
+    def test_noArgs(self):
+        with self.assertRaises(TypeError, msg="Too few arguments (0) fails to raise TypeError"):
+            s = Section()
+
+    def test_oneArgs(self):
+        with self.assertRaises(TypeError, msg="Too few arguments (1) fails to raise TypeError"):
+            s = Section("Course")
+
+    # TODO dont know how to test foreign keys
+    def test_validArgs(self):
+        s = Section("Course", "Title")
+        self.assertEqual(s.course, "Course", msg="Course")
+        self.assertEqual(s.title, "Title")
+
+    def test_threeArgs(self):
+        with self.assertRaises(TypeError, msg="Too many arguments (3) fails to raise TypeError"):
+            s = Section("Course", "Title", "Arg3")
 
     def test_blankCourse(self):
-        pass
-
-    def test_nonExistantCourse(self):
-        pass
+        with self.assertRaises(ValueError, msg="Invalid Course fails to raise ValueError"):
+            s = Section("\0", "Title")
 
     def test_blankTitle(self):
-        pass
+        with self.assertRaises(ValueError, msg="Invalid Title fails to raise ValueError"):
+            s = Section("Course", "\0")
 
-    def test_blankTA(self):
-        pass
-
-    def test_nonExistantTA(self):
-        pass
-
-    def test_validInfo(self):
-        pass
+    def test_nonExistantCourse(self):
+        pass #TODO
 
 
 class EditSection(TestCase):
