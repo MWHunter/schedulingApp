@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TA Scheduling App</title>
+</head>
+<body>
+    <div id="top">
+        <h1>TA Scheduling App</h1>
+    </div>
+    <br>
+    <h3>Your classes:</h3>
+    <table>
+        <tr>
+            <th>Class</th>
+            <th>Instructor</th>
+            <th>Time</th>
+        </tr>
+        {{% for class in classes %}}
+        <tr>
+            <th>{{ class.title }}</th>
+            <th>{{ class.instructor }}</th>
+            <th>{{ class.time }}</th>
+        </tr>
+        {{% endfor %}}
+    </table>
+</body>
+</html>
