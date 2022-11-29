@@ -4,8 +4,8 @@ from models import Course
 # Fields: Title
 class CreateCourse(TestCase):
     def test_noArgs(self):
-        a = Course()
-        self.assertRaises(TypeError, msg="Should raise TypeError for no arguments, requires a title and semester")
+        with self.assertRaises(TypeError, msg="Should raise TypeError for no arguments, requires a title and semester"):
+                a = Course()
 
     def test_oneArg(self):
         a = Course("CS361")
