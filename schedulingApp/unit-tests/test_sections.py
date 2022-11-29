@@ -6,6 +6,7 @@ from schedulingApp.models import Section
 class TestInit(TestCase):
     def setUp(self) -> None:
         pass  # TODO set up model course for valid foreign key
+
     def test_noArgs(self):
         with self.assertRaises(TypeError, msg="Too few arguments (0) fails to raise TypeError"):
             s = Section()
@@ -38,10 +39,12 @@ class TestInit(TestCase):
 
 class TestDelete(TestCase): # TODO not entirely sure on del
     s = None
+
     def setUp(self): # TODO
         self.s = Section("CS361", "Fall 2022")
         # self.s.course = "CS361"   # TODO make this a course foreign key
         self.s.title = "361-01"
+
     def test_sectionNotFound(self):
         with self.assertRaises(NameError, msg="Trying to delete nonexistent Section should throw NameError"):
             self.s2.delete()
@@ -58,6 +61,7 @@ class TestGetters(TestCase):
     s = None
     c = "CS361"
     t = "361-01"
+
     def setUp(self): # TODO
         self.s = Section(self.course, self.title)
         # self.s.course = "CS361"   # TODO make this a course foreign key
