@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Schedule an appointment | TA Scheduling App</title>
+</head>
+<body>
+    <div id="top">
+      <a href="home.html">Home</a>
+      <h1>Schedule an appointment</h1>
+    </div>
+    <br>
+    <label for="participant">Participant:</label>
+    <select name="participant">
+      {{% for person in instructors %}}
+      <option value={{ person }}>{{person.name}}</option>
+      {{% endfor %}}
+    </select>
+    <br>
+    <label for="time">Time:</label>
+    <input type="datetime-local" name="time">
+    <br>
+    <label for="reason">Reason:</label>
+    <input type="text" name="reason">
+    <br>
+    <input type="submit" value="Confirm appoinment">
+</body>
+</html>
