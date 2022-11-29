@@ -46,7 +46,7 @@ class Section(models.Model):
     def __init__(self, course, title):
         pass
 
-    def __del__(self):
+    def delete(self, using=None, keep_parents=False):
         pass
 
     # getters/setters
@@ -56,8 +56,7 @@ class Section(models.Model):
     def getTitle(self):
         pass
 
-    # Following method is possibly outside the scope of the current sprint
-    def getTAs(self):
+    def getTAs(self): # possibly outside the scope of the current sprint
         pass
 
     def setCourse(self, newCourse):
