@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Course</title>
+</head>
+<body>
+    <!--Sidebar navigation-->
+    <!--TODO Bootstrap styling-->
+    <div class="sidenav">
+        <a href="#">Home</a>
+        <a href="#">Logout</a>
+    </div>
+    <!--Add section form-->
+    <div class="addCourse">
+        <h3>Add New Course</h3>
+        <form action="#">
+            <label for="newCourseID">Course ID</label><br>
+            <input type="text" id="newCourseID" name="newCourseID"><br><br>
+            <!--TODO integrate with Django to be able to select associated semester-->
+            <form action="#">
+                <label for="newCourseSemester">Semester</label>
+                <select name="newCourseSemester" id="newCourseSemester">
+                    <option value="fall2022">Fall 2022</option>
+                    <option value="spring2023">Spring 2023</option>
+                    <option value="summer2023">Summer 2023</option>
+                </select>
+            </form>
+        <br>
+        <input type="submit" value="Create Course">
+        <a href="home.html">Cancel</a>
+      </form>
+    </div>
+</body>
+</html>
