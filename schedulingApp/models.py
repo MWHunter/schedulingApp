@@ -10,7 +10,6 @@ class User(models.Model):
 
     firstName = models.CharField(max_length=32)
     lastName = models.CharField(max_length=32)
-    password = models.CharField(max_length=32)
     emailAddress = models.CharField(max_length=32)
     homeAddress = models.CharField(max_length=64)
     phoneNumber = models.CharField(max_length=16)
