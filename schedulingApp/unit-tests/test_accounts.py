@@ -20,11 +20,12 @@ class CreateAccount(TestCase):
                                msg="Should raise TypeError for no arguments, requires a last name"):
             a = User("Robert", "")
 
-    def test_conflictingUsername(self):
-        with self.assertRaises(ValueError, User("Robert", "Smith"),
-                                msg="Duplicate names aren't allowed; that user already exists"):
-            a = User("Robert", "Smith")
+    def test_conflictingEmailCreation(self):
+        a = User("Rob", "Adams", "arob@uwm.edu", "Otherplace Rd 234", "4567891234", "ta")
 
+        with self.assertRaises(TypeError, msg="New Email should not match any other account's email"):
+            b = User("Bob", "Adams", "arob@uwm.edu", "Otherplace Rd 234", "4567891234", "ta")
+            
     def test_validInfo(self):
         a = User("Robert", "Smith")
         self.assertEqual(a.firstName, "Robert", msg="User did not successfully create with a valid first name.")
