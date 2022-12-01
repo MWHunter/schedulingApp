@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MaxValueValidator
 
 
 class User(models.Model):
@@ -12,7 +13,7 @@ class User(models.Model):
     lastName = models.CharField(max_length=32)
     emailAddress = models.CharField(max_length=32)
     homeAddress = models.CharField(max_length=64)
-    phoneNumber = models.IntegerField(max_length=16)
+    phoneNumber = models.PositiveIntegerField(primary_key=True, validators=[MaxValueValidator(9999999999)])
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
                                   default=PermissionLevel[0])
