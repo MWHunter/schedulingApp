@@ -22,3 +22,7 @@ class TestLogin(TestCase):
         for login in self.logins.keys():
             resp = self.monkey.post("/login.html", {"loginID": login, "loginPassword": r"0]er[]\o"}, follow=True)
             self.assertEqual(resp.request['PATH_INFO'], '/login.html', "login successful with incorrect password")
+
+    def testNoLoginRedirect(self):
+        resp = self.monkey.get("/", follow=True)
+        self.assertEqual(resp.request['PATH_INFO'], '/login.html', "Not logged in user allowed to view restricted page")
