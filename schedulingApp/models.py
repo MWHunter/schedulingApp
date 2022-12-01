@@ -38,7 +38,7 @@ class CourseToProfessorEntry(models.Model):
     assignedProfessor = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=False)
 
 
-class Section(models.Model):
+class LabSection(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
     title = models.CharField(max_length=32)
     assignedTA = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=False)
@@ -56,7 +56,7 @@ class Section(models.Model):
     def getTitle(self):
         pass
 
-    def getTAs(self): # possibly outside the scope of the current sprint
+    def getTA(self):
         pass
 
     def setCourse(self, newCourse):
@@ -65,11 +65,7 @@ class Section(models.Model):
     def setTitle(self, newTitle):
         pass
 
-    # Following 2 methods are possibly outside the scope of the current sprint
-    def addTA(self, addTA):
-        pass
-
-    def removeTA(self, remTA):
+    def setTA(self, newTA):
         pass
 
 
