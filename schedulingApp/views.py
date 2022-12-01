@@ -1,9 +1,8 @@
-from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
-from django.utils.decorators import method_decorator
 from django.views import View
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 class Login(View):
@@ -25,6 +24,10 @@ class Login(View):
         return render(request, "login.html", {})
 
 
-class Home(LoginRequiredMixin, View):
+# if you would wish to restrict a page behind permissions, use the following code instead:
+# @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+@method_decorator(login_required, name='dispatch')
+class Home(View):
+    @login_required
     def get(self, request):
         return render(request, "home.html", {})

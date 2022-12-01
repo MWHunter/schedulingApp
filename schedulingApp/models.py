@@ -8,10 +8,14 @@ from django.dispatch import receiver
 # The code was borrowed from this URL
 # https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
 class Profile(models.Model):
+    TA = 'ta'
+    PROFESSOR = 'professor'
+    ADMIN = 'admin'
+
     PermissionLevel = (
-        ('ta', 'TA'),
-        ('professor', 'Professor'),
-        ('admin', 'Admin')
+        (TA, 'TA'),
+        (PROFESSOR, 'Professor'),
+        (ADMIN, 'Admin')
     )
 
     # email, firstName, lastName, group see django object
@@ -20,7 +24,7 @@ class Profile(models.Model):
     homeAddress = models.CharField(max_length=64)
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
-                                  default=PermissionLevel[0])
+                                  default=TA)
 
 
 @receiver(post_save, sender=User)
