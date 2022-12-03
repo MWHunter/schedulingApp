@@ -28,6 +28,5 @@ class Login(View):
 # @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 @method_decorator(login_required, name='dispatch')
 class Home(View):
-    @login_required
     def get(self, request):
         return render(request, "home.html", {})
