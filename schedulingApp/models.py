@@ -45,6 +45,12 @@ class Course(models.Model):
 class Assignment(models.Model):
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=65536)
+    isTaAssignment = models.BooleanField
+
+
+class CourseToAssignmentEntry(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
 
 
 class CourseToAssignedTAEntry(models.Model):
