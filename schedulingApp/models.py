@@ -55,16 +55,16 @@ class CourseToAssignmentEntry(models.Model):
 
 class CourseToAssignedTAEntry(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedTA = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=False)
+    assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
     numAllowedLabs = models.IntegerField
 
 
 class CourseToProfessorEntry(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedProfessor = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=False)
+    assignedProfessor = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
 
 
 class LabSection(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
     title = models.CharField(max_length=32)
-    assignedTA = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=False)
+    assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
