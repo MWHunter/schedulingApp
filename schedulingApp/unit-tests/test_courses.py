@@ -1,87 +1,102 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
-from models import Course
+from schedulingApp.models import Course, courseExists
+
 
 # Fields: Title
 class CreateCourse(TestCase):
     def test_noArgs(self):
-        with self.assertRaises(TypeError, msg="Should raise TypeError for no arguments, requires a title and semester"):
+        with self.assertRaises(ValidationError,
+                               msg="Should raise ValidationError for only one argument, requires a title and semester"):
             a = Course()
+            a.full_clean()
 
     def test_oneArg(self):
-        with self.assertRaises(TypeError, msg="Should raise TypeError for only one argument, requires a title and semester"):
-            a = Course("CS361")
-
+        with self.assertRaises(ValidationError,
+                               msg="Should raise ValidationError for only one argument, requires a title and semester"):
+            a = Course(title="CS361")
+            a.full_clean()
     def test_validInfo(self):
-        a = Course("CS361", "Fall 2022")
+        a = Course(title="CS361", semester="FA22")
         self.assertEqual(a.title, "CS361", msg="Course did not successfully create with a valid title.")
-        self.assertEqual(a.semester, "Fall 2022", msg="Course did not successfully create with a valid semester")
+        self.assertEqual(a.semester, "FA22", msg="Course did not successfully create with a valid semester")
 
     def test_threeArgs(self):
-        with self.assertRaises(TypeError, msg="Should raise TypeError for three arguments, should only take two."):
-            a = Course("CS361", "Fall 2022", "Spring 2023")
+        with self.assertRaises(ValidationError, msg="Should raise TypeError for three arguments, should only take two."):
+            a = Course("CS361", "FA22", "Spring 2023")
+            a.full_clean()
 
     def test_emptyTitle(self):
-        with self.assertRaises(ValueError, msg="Should raise ValueError for empty string title, should require a non-empty title"):
-            a = Course("", "Fall 2022")
+        with self.assertRaises(ValidationError,
+                               msg="Should raise ValidationError for empty string title, should require a non-empty title"):
+            a = Course(title="", semester="FA22")
+            a.full_clean()
 
     def test_emptySemester(self):
-        with self.assertRaises(ValueError, msg="Should raise ValueError for empty string semester, should require a "
+        with self.assertRaises(ValidationError, msg="Should raise ValueError for empty string semester, should require a "
                                                "non-empty semester"):
-            a = Course("CS361", "")
+            a = Course(title="CS361", semester="")
+            a.full_clean()
 
     def test_conflictingCourse(self):
-        a = Course("CS361", "Fall 2022")
+        a = Course("CS361", "FA22")
         with self.assertRaises(ValueError, msg="Course with duplicate name and semester should not be allowed."):
-            b = Course("CS361", "Fall 2022")
+            b = Course("CS361", "FA22")
+            b.full_clean()
 
 
 class EditCourse(TestCase):
-    theCourse = None
+    theCourse = Course(title="CS361", semester="FA22")
 
-    def setUp(self):
-        theCourse = Course("CS361", "Fall 2022")
-        theCourse.title = "CS361"
-        theCourse.semester = "Fall 2022"
-
-    #testing title changes
+    # testing title changes
     def test_blankTitle(self):
+        self.setUp()
         with self.assertRaises(TypeError, msg="Calling setTitle with no argument should throw TypeError"):
             self.theCourse.setTitle()
 
     def test_invalidTitle(self):
+        self.setUp()
         with self.assertRaises(ValueError, msg="Changing course name to a blank string should throw ValueError"):
             self.theCourse.setTitle("")
 
     def test_titleChange(self):
+        self.setUp()
+        print(self.theCourse.getTitle)
         self.theCourse.setTitle("CS423")
         self.assertEqual(self.theCourse.getTitle(), "CS423", msg="Changing to a valid new title not successful")
 
     def test_titleNoChange(self):
+        self.setUp()
         self.theCourse.setTitle("CS361")
         self.assertEqual(self.theCourse.getTitle(), "CS361",
                          msg="Changing title to the currently set title should cause no change to the course")
 
-    #testing semester changes
+    # testing semester changes
     def test_blankSemester(self):
+        self.setUp()
         with self.assertRaises(TypeError, msg="Calling setSemester with no argument should throw TypeError"):
             self.theCourse.setSemester()
 
     def test_invalidSemester(self):
+        self.setUp()
         with self.assertRaises(ValueError, msg="Changing semester name to a blank string should throw ValueError"):
             self.theCourse.setSemester("")
 
     def test_semesterChange(self):
+        self.setUp()
         self.theCourse.setSemester("Spring 2023")
         self.assertEqual(self.theCourse.getSemester(), "Spring 2023",
                          msg="Changing to a valid new semester not successful")
 
     def test_semesterNoChange(self):
+        self.setUp()
         self.theCourse.setSemester("Fall 2022")
         self.assertEqual(self.theCourse.getSemester(), "Fall 2022",
                          msg="Changing semester to the currently set semester should cause no change to the course")
 
-    #general course change tests
+    # general course change tests
     def test_conflictingCourse(self):
+        self.setUp()
         a = Course("CS423", "Fall 2022")
         a.title = "CS423"
         a.semester = "Fall 2022"
@@ -90,6 +105,7 @@ class EditCourse(TestCase):
                          msg="Should not allow multiple courses with the same semester and title")
 
     def test_sameNameDifferentSemester(self):
+        self.setUp()
         a = Course("CS423", "Spring 2023")
         a.title = "CS423"
         a.semester = "Spring 2023"
@@ -98,13 +114,8 @@ class EditCourse(TestCase):
                          msg="Should update to the same name as a different course as long as semesters are different.")
 
 
-
 class DeleteCourse(TestCase):
-    theCourse = None
-    def setUp(self):
-        theCourse = Course("CS361", "Fall 2022")
-        theCourse.title = "CS361"
-        theCourse.semester = "Fall 2022"
+    theCourse = Course(title="CS361", semester="FA22")
 
     def test_courseNotFound(self):
         with self.assertRaises(NameError, msg="Trying to delete nonexistent course should throw NameError"):
@@ -116,4 +127,5 @@ class DeleteCourse(TestCase):
             self.theCourse.getTitle()
         with self.assertRaises(NameError, msg="Semester for deleted course should no longer exist."):
             self.theCourse.getSemester()
+
 
