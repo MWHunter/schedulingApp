@@ -50,46 +50,41 @@ class EditCourse(TestCase):
 
     # testing title changes
     def test_blankTitle(self):
-        self.setUp()
         with self.assertRaises(TypeError, msg="Calling setTitle with no argument should throw TypeError"):
             self.theCourse.setTitle()
 
     def test_invalidTitle(self):
-        self.setUp()
-        with self.assertRaises(ValueError, msg="Changing course name to a blank string should throw ValueError"):
-            self.theCourse.setTitle("")
+        with self.assertRaises(ValidationError,msg="Changing semester name to a blank string should throw ValidationError"):
+                self.theCourse.setTitle("")
+                self.theCourse.full_clean()
 
     def test_titleChange(self):
-        self.setUp()
         print(self.theCourse.getTitle)
         self.theCourse.setTitle("CS423")
         self.assertEqual(self.theCourse.getTitle(), "CS423", msg="Changing to a valid new title not successful")
 
     def test_titleNoChange(self):
-        self.setUp()
         self.theCourse.setTitle("CS361")
         self.assertEqual(self.theCourse.getTitle(), "CS361",
                          msg="Changing title to the currently set title should cause no change to the course")
 
     # testing semester changes
     def test_blankSemester(self):
-        self.setUp()
         with self.assertRaises(TypeError, msg="Calling setSemester with no argument should throw TypeError"):
             self.theCourse.setSemester()
 
     def test_invalidSemester(self):
-        self.setUp()
-        with self.assertRaises(ValueError, msg="Changing semester name to a blank string should throw ValueError"):
+        with self.assertRaises(ValidationError, msg="Changing semester name to a blank string should throw ValidationError"):
             self.theCourse.setSemester("")
+            self.theCourse.full_clean()
+
 
     def test_semesterChange(self):
-        self.setUp()
         self.theCourse.setSemester("Spring 2023")
         self.assertEqual(self.theCourse.getSemester(), "Spring 2023",
                          msg="Changing to a valid new semester not successful")
 
     def test_semesterNoChange(self):
-        self.setUp()
         self.theCourse.setSemester("Fall 2022")
         self.assertEqual(self.theCourse.getSemester(), "Fall 2022",
                          msg="Changing semester to the currently set semester should cause no change to the course")
