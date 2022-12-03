@@ -1,9 +1,12 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from schedulingApp.models import Profile
 
 
 class Login(View):
@@ -28,3 +31,8 @@ class Login(View):
 class Home(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, "home.html", {})
+
+
+class Users(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, "users.html", {"profiles": Profile.objects.all()})
