@@ -28,3 +28,8 @@ class Login(View):
 class Home(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, "home.html", {})
+
+
+class CreateUser(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, "createUser.html", {})

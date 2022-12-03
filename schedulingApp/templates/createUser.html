@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create New User</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <style>
+    .btn-primary {
+      background-color: #9b7f1c;
+      border-color: #9b7f1c;
+    }
+	
+	.col-sm-2 {
+		background-color: #ffbd00;
+		height: 100vh;
+		padding: 1% 3%;
+	}
+	
+	.col-sm-10 {
+	  padding: 5% 25% 5% 5%;
+	}
+	
+	a {
+      color: black;
+    }
+	
+	.container-fluid {
+	  padding: 0% 0%;
+	  height: 100vh
+	}
+	
+	body {
+	  height: 100vh
+	}
+	
+
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+      <div class="row">
+      <div class="col-sm-2">
+        <h4>John Doe</h4>
+        <nav class="nav flex-column">
+          <a class="nav-link active" href="#">My Account</a>
+          <a class="nav-link" href="#">Courses</a>
+          <a class="nav-link" href="#">User Directory</a>
+          <a class="nav-link" href="#">Logout</a>
+        </nav>
+      </div>
+	
+	<div class="col-sm-10">
+	<h1>Create New User</h1>
+    <form>
+      <div class="form-group">
+        <label for="first-name">First name</label>
+        <input type="text" class="form-control" id="first-name" placeholder="Enter first name">
+      </div>
+      <div class="form-group">
+        <label for="last-name">Last name</label>
+        <input type="text" class="form-control" id="last-name" placeholder="Enter last name">
+      </div>
+      <div class="form-group">
+        <label for="email-address">Email address</label>
+        <input type="email" class="form-control" id="email-address" placeholder="Enter email address">
+      </div>
+      <div class="form-group">
+        <label for="home-address">Home address</label>
+        <input type="text" class="form-control" id="home-address" placeholder="Enter home address">
+      </div>
+      <div class="form-group">
+        <label for="phone-number">Phone number</label>
+        <input type="tel" class="form-control" id="phone-number" placeholder="Enter phone number">
+      </div>
+      <div class="form-group">
+        <label for="user-role">User role</label>
+        <select class="form-control" id="user-role">
+          <option>TA</option>
+          <option>Professor</option>
+          <option>Teacher</option>
+        </select>
+      </div>
+      <button type="button" class="btn btn-secondary">Cancel</button>
+      <button type="submit" class="btn btn-primary">Create User</button>
+    </form>
+	</div>
+  </div>
+</body>
+</html>
