@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.contrib.auth.models import User
 
@@ -5,31 +6,34 @@ from django.contrib.auth.models import User
 # Fields: EMail Phone Address FirstName LastName PermissionLevel OfficeHours
 class CreateAccount(TestCase):
     def test_emptyUsername(self):
-        with self.assertRaises(TypeError,
-                               msg="Should raise TypeError for no arguments, requires a first and last name"):
+        with self.assertRaises(ValidationError,
+                               msg="Should raise ValidationError for no arguments, requires a first and last name"):
             a = User("", "")
+            a.full_clean()
 
     def test_emptyFirstName(self):
-        with self.assertRaises(TypeError,
-                               msg="Should raise TypeError for no arguments, requires a first name"):
+        with self.assertRaises(ValidationError,
+                               msg="Should raise ValidationError for no arguments, requires a first name"):
             a = User("", "Smith")
-
+            a.full_clean()
 
     def test_emptyLastName(self):
-        with self.assertRaises(TypeError,
-                               msg="Should raise TypeError for no arguments, requires a last name"):
+        with self.assertRaises(ValidationError,
+                               msg="Should raise ValidationError for no arguments, requires a last name"):
             a = User("Robert", "")
+            a.full_clean()
 
     def test_conflictingEmailCreation(self):
         a = User("Rob", "Adams", "arob@uwm.edu", "Otherplace Rd 234", "4567891234", "ta")
 
         with self.assertRaises(TypeError, msg="New Email should not match any other account's email"):
             b = User("Bob", "Adams", "arob@uwm.edu", "Otherplace Rd 234", "4567891234", "ta")
-            
+
     def test_validInfo(self):
         a = User("Robert", "Smith")
         self.assertEqual(a.firstName, "Robert", msg="User did not successfully create with a valid first name.")
         self.assertEqual(a.lastName, "Robert", msg="User did not successfully create with a valid last name.")
+
 
 class EditAccount(TestCase):
     theUser = None
@@ -74,31 +78,38 @@ class EditAccount(TestCase):
         self.assertRaises(TypeError, self.theUser.setPermission(),
                           msg="Calling setPermission with no argument should throw TypeError")
 
-
     def test_invalidFirstName(self):
-        self.assertRaises(ValueError, self.theUser.setUserName(""),
-                          msg="Calling setUserName with no argument should throw ValueError")
+        with self.assertRaises(ValidationError,  msg="Calling setUserName with no argument should throw ValueError"):
+            self.theUser.setUserName("")
+            self.theUser.full_clean()
 
     def test_invalidLastName(self):
-        self.assertRaises(ValueError, self.theUser.setLastName(""),
-                          msg="Calling setLastName with no argument should throw ValueError")
+        with self.assertRaises(ValidationError, msg="Calling setLastName with no argument should throw ValueError"):
+            self.theUser.setLastName("")
+            self.theUser.full_clean()
 
     def test_invalidEmailAddress(self):
-        self.assertRaises(ValueError, self.theUser.setEmailAddress(""),
-                          msg="Calling setEmailAddress with no argument should throw ValueError")
+        with self.assertRaises(ValidationError,
+                               msg="Calling setEmailAddress with no argument should throw ValueError"):
+            self.theUser.setEmailAddress("")
+            self.theUser.full_clean()
 
     def test_invalidHomeAddress(self):
-        self.assertRaises(ValueError, self.theUser.setHomeAddress(""),
-                          msg="Calling setHomeAddress with no argument should throw ValueError")
+        with self.assertRaises(ValueError, msg="Calling setHomeAddress with no argument should throw ValueError"):
+            self.theUser.setHomeAddress("")
+            self.theUser.full_clean()
 
     def test_invalidPhoneNumber(self):
-        self.assertRaises(ValueError, self.theUser.setPhoneNumber(""),
-                          msg="Calling setPhoneNumber with no argument should throw ValueError")
+        with self.assertRaises(ValidationError,
+                               msg="Calling setPhoneNumber with no argument should throw ValueError"):
+            self.theUser.setPhoneNumber("")
+            self.theUser.full_clean()
 
     def test_invalidPermission(self):
-        self.assertRaises(ValueError, self.theUser.setPermission(""),
-                          msg="Calling setPermission with no argument should throw ValueError")
-
+        with self.assertRaises(ValidationError,
+                               msg="Calling setPermission with no argument should throw ValueError"):
+            self.theUser.setPermission("")
+            self.theUser.full_clean()
 
     def test_changeFirstName(self):
         self.theUser.setFirstName("Rob")
@@ -129,7 +140,6 @@ class EditAccount(TestCase):
         self.theUser.setPermission("ta")
         self.assertEqual(self.theUser.getPermission(), "ta",
                          msg="Changing the permissions to a new value one wasn't successful")
-
 
     def test_noChangeFirstName(self):
         self.assertEqual(self.theUser.getFirstName(), "Robert",
@@ -175,6 +185,7 @@ class EditAccount(TestCase):
         a.setPhoneNumber("2345678901")
         self.assertFalse(a.phoneNumber == "2345678901",
                          msg="Phone number should not match any other accounts")
+
 
 class DeleteAccount(TestCase):
     theUser = None
