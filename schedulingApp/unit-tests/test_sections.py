@@ -1,142 +1,177 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
-from schedulingApp.models import LabSection, Course, User
+from schedulingApp.models import LabSection, Course, Profile, User
 from unittest import mock
 
 
 # Fields: course, title, assignedTA
 class TestInit(TestCase):
-    c = None
+    course = None
+    title = "CS361-01"
+    profile = None
 
     def setUp(self) -> None:
-        self.c = Course.objects.create("CS361")
+        self.course = mock.Mock(spec=Course)
+        self.course.title = "CS361"
+        self.course.semester = "FA22"
+        self.profile = mock.Mock(spec=Profile)
+        self.profile.phoneNumber = "123456789"
+        self.profile.homeAddress = "Here"
+        self.profile.permission = Profile.PermissionLevel['TA']
 
     def test_noArgs(self):
-        with self.assertRaises(TypeError, msg="Too few arguments (0) fails to raise TypeError"):
-            s = LabSection()
+        with self.assertRaises(ValidationError, msg="Too few arguments (0) fails to raise ValidationError"):
+            s = LabSection.objects.create()
 
     def test_oneArgs(self):
-        with self.assertRaises(TypeError, msg="Too few arguments (1) fails to raise TypeError"):
-            s = LabSection("Course")
+        with self.assertRaises(ValidationError, msg="Too few arguments (1) fails to raise ValidationError"):
+            s = LabSection.objects.create(course=self.course)
 
     def test_validArgs(self):
-        s = LabSection(self.c, "Title")
-        self.assertEqual(s.course, self.c, msg="Course not properly set in constructor")
-        self.assertEqual(s.title, "Title", msg="Title not properly set in constructor")
+        s = LabSection.objects.create(course=self.course, title=self.title, assignedTA=self.profile)
+        self.assertEqual(s.course, self.course, msg="Course not properly set in constructor")
+        self.assertEqual(s.title, self.title, msg="Title not properly set in constructor")
 
-    def test_threeArgs(self):
-        with self.assertRaises(TypeError, msg="Too many arguments (3) fails to raise TypeError"):
-            s = LabSection("Course", "Title", "Arg3")
-
-    def test_blankCourse(self):
-        with self.assertRaises(ValueError, msg="Invalid Course fails to raise ValueError"):
-            s = LabSection("\0", "Title")
+    def test_invalidCourse(self):
+        with self.assertRaises(ValidationError, msg="Invalid Course fails to raise ValidationError"):
+            s = LabSection.objects.create(course="course", title=self.title, assignedTA=self.profile)
 
     def test_blankTitle(self):
-        with self.assertRaises(ValueError, msg="Invalid Title fails to raise ValueError"):
-            s = LabSection("Course", "\0")
+        with self.assertRaises(ValidationError, msg="Invalid Title fails to raise ValidationError"):
+            s = LabSection.objects.create(course=self.course, title="", assignedTA=self.profile)
+
+    def test_invalidTA(self):
+        with self.assertRaises(ValidationError, msg="Invalid Title fails to raise ValidationError"):
+            s = LabSection.objects.create(course=self.course, title=self.title, assignedTA="TA")
 
 
 class TestDelete(TestCase):
-    c = None
-    s = None
+    course = None
+    title = "CS361-01"
+    profile = None
+    section = None
 
-    def setUp(self): # TODO
-        self.c = Course.objects.create("CS361")
-        self.s = LabSection("CS361", "Fall 2022")
-        self.s.course = self.c
-        self.s.title = "361-01"
+    def setUp(self) -> None:
+        self.course = mock.Mock(spec=Course)
+        self.course.title = "CS361"
+        self.course.semester = "FA22"
+        self.profile = mock.Mock(spec=Profile)
+        self.profile.phoneNumber = "123456789"
+        self.profile.homeAddress = "Here"
+        self.profile.permission = Profile.PermissionLevel['TA']
+
+        self.section = LabSection.objects.create(course=self.course, title=self.title, assignedTA=self.profile)
 
     def test_sectionNotFound(self):
         with self.assertRaises(NameError, msg="Trying to delete nonexistent Section should throw NameError"):
-            self.s2.delete()
+            del self.section2
 
     def test_validAndExistingSection(self):
-        self.s.delete()
+        del self.section
         with self.assertRaises(AttributeError, msg="Field course Still exists after deletion"):
-            self.assertNotEqual(self.s.course, self.c, msg="No Change to course field after deletion")
+            self.assertNotEqual(self.section.course, self.c, msg="No Change to course field after deletion")
         with self.assertRaises(AttributeError, msg="Field title Still exists after deletion"):
-            self.assertNotEqual(self.s.title, "361-01", msg="No Change to title field after deletion")
+            self.assertNotEqual(self.section.title, "361-01", msg="No Change to title field after deletion")
 
 
 class TestGetters(TestCase):
-    s, c, ta = None
-    t = "361-01"
+    course = None
+    title = "CS361-01"
+    profile = None
+    section = None
 
-    def setUp(self): # TODO
-        self.c = Course.objects.create("CS361")
-        self.ta = User.objects.create("firstName", "lastName", "password", "emailAddress", "homeAddress", "phoneNumber", User.PermissionLevel[0])
-        self.s = LabSection(self.c, self.title)
-        self.s.course = self.c
-        self.s.title = "361-01"
+    def setUp(self) -> None:
+        self.course = mock.Mock(spec=Course)
+        self.course.title = "CS361"
+        self.course.semester = "FA22"
+        self.profile = mock.Mock(spec=Profile)
+        self.profile.phoneNumber = "123456789"
+        self.profile.homeAddress = "Here"
+        self.profile.permission = Profile.PermissionLevel['TA']
+
+        self.section = LabSection.objects.create(course=self.course, title=self.title, assignedTA=self.profile)
 
     def test_getCourseArgs(self):
         with self.assertRaises(TypeError, msg="Too many arguments (1) fails to raise TypeError"):
-            self.s.getCourse("arg")
+            self.semester.getCourse("arg")
 
     def test_getCourseValid(self):
-        self.assertEqual(self.s.getCourse(), self.c, msg="getCourse does not return proper course")
+        self.assertEqual(self.semester.getCourse(), self.course, msg="getCourse does not return proper course")
 
     def test_getTitleArgs(self):
         with self.assertRaises(TypeError, msg="Too many arguments (1) fails to raise TypeError"):
-            self.s.getTitle("arg")
+            self.semester.getTitle("arg")
 
     def test_getTitleValid(self):
-        self.assertEqual(self.s.getTitle(), "361-01", msg="getTitle does not return proper course")
+        self.assertEqual(self.semester.getTitle(), self.title, msg="getTitle does not return proper course")
 
     def test_getTAArgs(self):
         with self.assertRaises(TypeError, msg="Too many arguments (1) fails to raise TypeError"):
-            self.s.getTA("arg")
+            self.semester.getTA("arg")
 
     def test_getTAValid(self):
-        self.assertEqual(self.s.getTA(), self.ta, msg="getTA does not return proper TA")
+        self.assertEqual(self.semester.getTA(), self.profile, msg="getTA does not return proper TA")
 
 
 class TestSetters(TestCase):
-    s, c, c2, ta, ta2 = None
-    t = "361-01"
+    course = None
+    title = "CS361-01"
+    profile = None
+    section = None
+    course2 = None
+    title2 = "CS431-01"
+    profile2 = None
 
-    def setUp(self):
-        self.c = Course.objects.create("CS361")
-        self.c2 = Course.objects.create("CS431")
-        self.ta = User.objects.create("firstName", "lastName", "password", "emailAddress", "homeAddress", "phoneNumber", User.PermissionLevel[0])
-        self.ta2 = User.objects.create("firstName2", "lastName2", "password2", "emailAddress2", "homeAddress2", "phoneNumber2", User.PermissionLevel[0])
-        self.s = LabSection(self.c, self.title)
-        self.s.course = self.c
-        self.s.assignedTA = self.ta
-        self.s.title = "361-01"
+    def setUp(self) -> None:
+        self.course = mock.Mock(spec=Course)
+        self.course.title = "CS361"
+        self.course.semester = "FA22"
+        self.profile = mock.Mock(spec=Profile)
+        self.profile.phoneNumber = "123456789"
+        self.profile.homeAddress = "Here"
+        self.profile.permission = Profile.PermissionLevel['TA']
+
+        self.section = LabSection.objects.create(course=self.course, title=self.title, assignedTA=self.profile)
+
+        self.course2.title = "CS431"
+        self.course2.semester = "FA23"
+        self.profile2 = mock.Mock(spec=Profile)
+        self.profile2.phoneNumber = "987654321"
+        self.profile2.homeAddress = "There"
+        self.profile2.permission = Profile.PermissionLevel['TA']
 
     def test_setCourseNoArgs(self):
         with self.assertRaises(TypeError, msg="Too few arguments (0) fails to raise TypeError"):
-            self.s.setCourse()
+            self.section.setCourse()
 
     def test_setCourseTwoArgs(self):
         with self.assertRaises(TypeError, msg="Too many arguments (2) fails to raise TypeError"):
-            self.s.setCourse(self.c2, "arg2")
+            self.section.setCourse(self.course2, "arg2")
 
     def test_setCourseValid(self):
-        self.s.setCourse(self.c2)
-        self.assertEqual(self.s.course, self.c2, msg="setCourse does not set the course properly")
+        self.section.setCourse(self.course2)
+        self.assertEqual(self.section.course, self.course2, msg="setCourse does not set the course properly")
 
     def test_setTitleNoArgs(self):
         with self.assertRaises(TypeError, msg="Too few arguments (0) fails to raise TypeError"):
-            self.s.setTitle()
+            self.section.setTitle()
 
     def test_setTitleTwoArgs(self):
         with self.assertRaises(TypeError, msg="Too many arguments (2) fails to raise TypeError"):
-            self.s.setTitle("newTitle", "arg2")
+            self.section.setTitle(self.title2, "arg2")
 
     def test_setTitleValid(self):
-        self.s.setTitle("newTitle")
-        self.assertEqual(self.s.course, "newTitle", msg="setTitle does not set the title properly")
+        self.s.setTitle(self.title2)
+        self.assertEqual(self.section.course, self.title2, msg="setTitle does not set the title properly")
 
     def test_setTANoArgs(self):
         with self.assertRaises(TypeError, msg="Too few arguments (0) fails to raise TypeError"):
-            self.s.setTA()
+            self.section.setTA()
 
     def test_setTATwoArgs(self):
         with self.assertRaises(TypeError, msg="Too many arguments (2) fails to raise TypeError"):
-            self.s.setTA(self.ta2, "arg2")
+            self.section.setTA(self.profile2, "arg2")
 
     def test_setTAValid(self):
-        self.s.setTA(self.c2)
-        self.assertEqual(self.s.course, self.ta2, msg="setTA does not set the TA properly")
+        self.section.setTA(self.profile2)
+        self.assertEqual(self.section.assignedTA, self.profile2, msg="setTA does not set the TA properly")
