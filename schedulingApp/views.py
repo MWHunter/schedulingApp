@@ -27,8 +27,7 @@ class Login(View):
         if user is not None:
             login(request, user)
             return redirect("/")
-        # TODO: Say invalid username or password?
-        return render(request, "login.html", {})
+        return render(request, "login.html", {"error": "Invalid username or password"})
 
 
 # if you would wish to restrict a page behind permissions, use the following code instead:
