@@ -8,10 +8,14 @@ from django.dispatch import receiver
 # The code was borrowed from this URL
 # https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
 class Profile(models.Model):
+    TA = 'ta'
+    PROFESSOR = 'professor'
+    ADMIN = 'admin'
+
     PermissionLevel = (
-        ('ta', 'TA'),
-        ('professor', 'Professor'),
-        ('admin', 'Admin')
+        (TA, 'TA'),
+        (PROFESSOR, 'Professor'),
+        (ADMIN, 'Admin')
     )
 
     # email, firstName, lastName, group see django object
@@ -20,7 +24,7 @@ class Profile(models.Model):
     homeAddress = models.CharField(max_length=64)
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
-                                  default=PermissionLevel[0])
+                                  default=TA)
 
 
 @receiver(post_save, sender=User)
@@ -41,20 +45,26 @@ class Course(models.Model):
 class Assignment(models.Model):
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=65536)
+    isTaAssignment = models.BooleanField
+
+
+class CourseToAssignmentEntry(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
 
 
 class CourseToAssignedTAEntry(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedTA = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=False)
+    assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
     numAllowedLabs = models.IntegerField
 
 
 class CourseToProfessorEntry(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedProfessor = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=False)
+    assignedProfessor = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
 
 
 class LabSection(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
     title = models.CharField(max_length=32)
-    assignedTA = models.ForeignKey(User, on_delete=models.DO_NOTHING, null=False)
+    assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
