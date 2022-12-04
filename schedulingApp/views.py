@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 
@@ -42,6 +42,14 @@ class Home(View):
 class Users(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, "users.html", {"profiles": Profile.objects.all()})
+
+
+# We don't care if a user has logged in for this one
+class LogOut(View):
+    def get(self, request):
+        logout(request)
+        return redirect("login.html")
+
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
