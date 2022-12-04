@@ -32,7 +32,7 @@ class Login(View):
 @method_decorator(login_required, name='dispatch')
 class Home(View):
     def get(self, request):
-        return render(request, "home.html", {})
+        return render(request, "home.html", {"profile": Profile.objects.get(user=request.user)})
 
 
 class Users(LoginRequiredMixin, View):
