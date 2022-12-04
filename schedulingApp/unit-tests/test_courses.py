@@ -7,7 +7,7 @@ from schedulingApp.models import Course, courseExists
 class CreateCourse(TestCase):
     def test_noArgs(self):
         with self.assertRaises(ValidationError,
-                               msg="Should raise ValidationError for only one argument, requires a title and semester"):
+                               msg="Should raise ValidationError for no arguments, requires a title and semester"):
             a = Course()
             a.full_clean()
 
