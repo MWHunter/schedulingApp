@@ -21,12 +21,19 @@ class Profile(models.Model):
         (ADMIN, 'Admin')
     )
 
+
+    firstName = models.CharField(max_length=32)
+    lastName = models.CharField(max_length=32)
+    emailAddress = models.CharField(max_length=32)
+    homeAddress = models.CharField(max_length=64)
+    phoneNumber = models.PositiveIntegerField(primary_key=True, validators=[MaxValueValidator(9999999999)])
+    
     # email, firstName, lastName, group see django object
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phoneNumber = models.CharField(max_length=16, validators=[RegexValidator(r"^(\+[0-9]{1,3}[\s-])?(\([0-9]{3}\)|["
                                                                              r"0-9]{3}[\s-])?[0-9]{3}[\s-]?[0-9]{4}("
                                                                              r"x[0-9]+)?$")])
-    homeAddress = models.CharField(max_length=64)
+
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
                                   default=TA)
@@ -47,6 +54,55 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
+    # constructor/destructor
+    def __init__(self, firstName, lastName, password, emailAddress, homeAddress, phoneNumber, permission):
+        pass
+
+    def __del__(self):
+        pass
+
+    # getters/setters
+    def getFirstName(self):
+        pass
+
+    def getLastName(self):
+        pass
+
+    def getPassword(self):
+        pass
+
+    def getEmailAddress(self):
+        pass
+
+    def getHomeAddress(self):
+        pass
+
+    def getPhoneNumber(self):
+        pass
+
+    def getPermission(self):
+        pass
+
+    def setFirstName(self, firstName):
+        pass
+
+    def setLastName(self, lastName):
+        pass
+
+    def setPassword(self, password):
+        pass
+
+    def setEmailAddress(self, emailAddress):
+        pass
+
+    def setHomeAddress(self, homeAddress):
+        pass
+
+    def setPhoneNumber(self, phoneNumber):
+        pass
+
+    def setPermission(self, permission):
+        pass
 
 class Course(models.Model):
     title = models.CharField(max_length=32)
