@@ -23,11 +23,6 @@ class Course(models.Model):
     semester = models.CharField(max_length=32)
 
     #constructor/destructor
-    def __init__(self, title, semester):
-        pass
-
-    def __del__(self):
-        pass
 
     #getters/setters
     def getTitle(self):
