@@ -1,7 +1,10 @@
+from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import re
 
 
 # Confused about OneToOneFields and how to use them?
@@ -20,11 +23,18 @@ class Profile(models.Model):
 
     # email, firstName, lastName, group see django object
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phoneNumber = models.CharField(max_length=16)
+    phoneNumber = models.CharField(max_length=16, validators=[RegexValidator(r"^(\+[0-9]{1,3}[\s-])?(\([0-9]{3}\)|["
+                                                                             r"0-9]{3}[\s-])?[0-9]{3}[\s-]?[0-9]{4}("
+                                                                             r"x[0-9]+)?$")])
     homeAddress = models.CharField(max_length=64)
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
                                   default=TA)
+
+
+def validatePhoneNumber(number):
+    if not re.match(r"^(\+[0-9]{1,3}[\s-])?(\([0-9]{3}\)|[0-9]{3}[\s-])?[0-9]{3}[\s-]?[0-9]{4}(x[0-9]+)?$", number):
+        raise ValidationError("Invalid phone number")
 
 
 @receiver(post_save, sender=User)
