@@ -68,3 +68,28 @@ class LabSection(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
     title = models.CharField(max_length=32)
     assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
+
+    def __init__(self, course, title):
+        pass
+
+    def delete(self, using=None, keep_parents=False):
+        pass
+
+    # getters/setters
+    def getCourse(self):
+        pass
+
+    def getTitle(self):
+        pass
+
+    def getTA(self):
+        pass
+
+    def setCourse(self, newCourse):
+        pass
+
+    def setTitle(self, newTitle):
+        pass
+
+    def setTA(self, newTA):
+        pass
