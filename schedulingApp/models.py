@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -21,12 +21,7 @@ class Profile(models.Model):
         (ADMIN, 'Admin')
     )
 
-
-    firstName = models.CharField(max_length=32)
-    lastName = models.CharField(max_length=32)
-    emailAddress = models.CharField(max_length=32)
     homeAddress = models.CharField(max_length=64)
-    phoneNumber = models.PositiveIntegerField(primary_key=True, validators=[MaxValueValidator(9999999999)])
     
     # email, firstName, lastName, group see django object
     user = models.OneToOneField(User, on_delete=models.CASCADE)
