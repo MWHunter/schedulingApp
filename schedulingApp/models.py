@@ -49,21 +49,6 @@ class Profile(models.Model):
         self.permission = permission
 
 
-@receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
-    if created:
-        instance.first_name = "admin"
-        instance.last_name = "user"
-        Profile.objects.create(user=instance, phoneNumber="(555) 555-5555", address="UWM Admins",
-                               permission=Profile.ADMIN)
-        instance.save()
-
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    instance.profile.save()
-
-    # getters/setters
     def getFirstName(self):
         pass
 
@@ -105,6 +90,22 @@ def save_user_profile(sender, instance, **kwargs):
 
     def setPermission(self, permission):
         pass
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        instance.first_name = "admin"
+        instance.last_name = "user"
+        profile = Profile.objects.create(user=instance, phoneNumber="(555) 555-5555", homeAddress="UWM Admins",
+                               permission=Profile.ADMIN)
+        profile.save()
+        instance.save()
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
 
 class Course(models.Model):
     title = models.CharField(max_length=32)

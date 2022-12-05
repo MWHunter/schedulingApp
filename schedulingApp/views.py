@@ -1,4 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
@@ -67,6 +70,18 @@ class AddUser(View):
         except (ValidationError, ValueError, IntegrityError) as e:
             error = str(e)
             return render(request, "addUser.html", {"error": error})
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class AddCourse(View):
+    def get(self, request):
+        return render(request, "addCourse.html", {})
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class AddSection(View):
+    def get(self, request):
+        return render(request, "addSection.html", {})
 
 
 # We don't care if a user has logged in for this one
