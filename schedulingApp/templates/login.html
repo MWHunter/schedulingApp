@@ -45,10 +45,10 @@
         <h2>Welcome to the UWM TA Scheduling App!</h2>
         <form action="#" method="post">
             {% csrf_token %}
-            <label for="loginID">Username</label><br>
-            <input type="text" id="loginID" name="loginID"><br>
+            <label for="loginID">Email Address</label><br>
+            <input type="text" id="loginID" name="loginID" placeholder="user@uwm.edu"><br>
             <label for="loginPassword">Password</label><br>
-            <input type="password" id="loginPassword" name="loginPassword"><br><br>
+            <input type="password" id="loginPassword" name="loginPassword" placeholder="********"><br><br>
             <input class="btn btn-primary" type="submit" value="Login">
         </form>
         {% if error %}
