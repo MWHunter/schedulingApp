@@ -1,7 +1,6 @@
-from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
-from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -22,7 +21,7 @@ class Profile(models.Model):
         (ADMIN, 'Admin')
     )
 
-    # email, firstName, lastName, group see django object
+    # email, first_name, last_name, group see django object
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # Examples of valid formats
     # +1 (555) 555-5555, (555) 555-5555, 555-555-5555, 555 555-5555,
@@ -47,7 +46,6 @@ class Profile(models.Model):
 
     def set_permission_level(self, permission):
         self.permission = permission
-
 
     def getFirstName(self):
         pass
@@ -98,7 +96,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         instance.first_name = "admin"
         instance.last_name = "user"
         profile = Profile.objects.create(user=instance, phoneNumber="(555) 555-5555", homeAddress="UWM Admins",
-                               permission=Profile.ADMIN)
+                                         permission=Profile.ADMIN)
         profile.save()
         instance.save()
 
@@ -107,8 +105,10 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
+
 class Course(models.Model):
     title = models.CharField(max_length=32)
+    semester = models.CharField(max_length=16)
 
 
 class Assignment(models.Model):

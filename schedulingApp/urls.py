@@ -18,16 +18,18 @@ from django.contrib import admin
 from django.urls import path
 
 from schedulingApp import settings
-from schedulingApp.views import Login, Home, Users, LogOut, AddUser, AddCourse, AddSection, Courses
+from schedulingApp.views import *
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users.html', Users.as_view()),
     path('courses.html', Courses.as_view()),
+    path('sections.html', Sections.as_view()),
     path('login.html', Login.as_view()),
     path('logout.html', LogOut.as_view()),
     path('addUser.html', AddUser.as_view()),
     path('addCourse.html', AddCourse.as_view()),
     path('addSection.html', AddSection.as_view()),
+    path('user/<int:id>', ViewUser.as_view()),
     path('', Home.as_view())
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_URL)
