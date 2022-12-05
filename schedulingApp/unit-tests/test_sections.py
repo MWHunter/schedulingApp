@@ -24,9 +24,10 @@ class TestInit(TestCase):
         with self.assertRaises(ValueError, msg="Invalid Course fails to raise ValueError"):
             s = LabSection(course="course", title=self.title, assignedTA=self.profile)
 
-    def test_blankTitle(self): # TODO dont know how to check constructor value
+    def test_blankTitle(self):
         with self.assertRaises(ValidationError, msg="Invalid Title fails to raise ValidationError"):
             s = LabSection(course=self.course, title="", assignedTA=self.profile)
+            s.full_clean()  # Note: is for validation
 
     def test_invalidTA(self):
         with self.assertRaises(ValueError, msg="Invalid Title fails to raise ValueError"):
