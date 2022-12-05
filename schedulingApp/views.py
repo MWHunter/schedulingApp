@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 
-from schedulingApp.models import Profile
+from schedulingApp.models import Profile, Course
 from schedulingApp.permissionTests import user_has_admin_permission
 
 
@@ -89,3 +89,7 @@ class LogOut(View):
     def get(self, request):
         logout(request)
         return redirect("login.html")
+
+class Courses(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, "courses.html", {"courses": Course.objects.all()})

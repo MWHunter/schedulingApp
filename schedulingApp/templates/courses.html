@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Users</title>
+    <title>Courses</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <style>
@@ -43,25 +43,23 @@
         <div class="row">
             {% include 'navbar.html' %}
             <div class="col-sm-10">
-                <h1>Registered Users</h1>
+                <h1>Active Courses</h1>
                 <table>
                     <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Permission Level</th>
+                        <th>Course Name</th>
+                        <th>Course Semester</th>
                         <th>Actions</th>
                     </tr>
-                    {% for profile in profiles %}
+                    {% for course in courses %}
                         <tr>
-                            <td>{{ profile.user.firstName }}</td>
-                            <td>{{ profile.user.lastName }}</td>
+                            <td>{{ course.title }}</td>
+                            <td>{{ course.get_ }}</td>
                             <td>{{ profile.permission }}</td>
                             <td><a href="testing" class="btn btn-primary">More Info</a></td>
                         </tr>
-
                     {% endfor %}
                 </table>
-                <a class="btn btn-primary" href="addUser.html">Add User</a>
+                <a class="btn btn-primary" href="addCourse.html">Add Course</a>
             </div>
         </div>
     </div>
