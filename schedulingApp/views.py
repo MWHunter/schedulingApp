@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from schedulingApp.models import Profile, Course, LabSection, Semester
+from schedulingApp.models import Profile, Course, LabSection
 from schedulingApp.permissionTests import user_has_admin_permission
 
 
@@ -61,6 +61,7 @@ class AddUser(View):
             profile = Profile.objects.get(user=user)
             profile.address = request.POST.get('home-address')
             profile.phoneNumber = request.POST.get("phone-number")
+            profile.permission = request.POST.get("user-role").lower()
 
             user.full_clean()
             profile.full_clean()
@@ -82,8 +83,7 @@ class AddCourse(View):
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddSection(View):
     def get(self, request):
-        return render(request, "addSection.html", {"profile": Profile.objects.get(user=request.user),
-                                                   "semesters": Semester.objects.all()})
+        return render(request, "addSection.html", {"profile": Profile.objects.get(user=request.user)})
 
 
 # We don't care if a user has logged in for this one

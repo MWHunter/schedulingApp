@@ -26,7 +26,7 @@ class Profile(models.Model):
     # Examples of valid formats
     # +1 (555) 555-5555, (555) 555-5555, 555-555-5555, 555 555-5555,
     # 555 555 5555, 555 555 5555 55
-    phoneNumber = models.CharField(max_length=16, validators=[RegexValidator(phoneRegex)])
+    phoneNumber = models.CharField(max_length=24, validators=[RegexValidator(phoneRegex)])
     homeAddress = models.CharField(max_length=64)
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
@@ -93,10 +93,15 @@ class Profile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        instance.first_name = "admin"
-        instance.last_name = "user"
-        profile = Profile.objects.create(user=instance, phoneNumber="(555) 555-5555", homeAddress="UWM Admins",
-                                         permission=Profile.ADMIN)
+        # This is the first user and is therefore the admin user.
+        if len(Profile.objects.all()) == 0:
+            instance.first_name = "admin"
+            instance.last_name = "user"
+            profile = Profile.objects.create(user=instance, phoneNumber="(555) 555-5555", homeAddress="UWM Admins",
+                                             permission=Profile.ADMIN)
+        else:
+            profile = Profile.objects.create(user=instance, phoneNumber="(555) 555-5555", homeAddress="USER",
+                                             permission=Profile.TA)
         profile.save()
         instance.save()
 
