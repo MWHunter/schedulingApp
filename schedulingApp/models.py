@@ -32,63 +32,6 @@ class Profile(models.Model):
                                   choices=PermissionLevel,
                                   default=TA)
 
-    def get_user(self):
-        return self.user
-
-    def get_phone_number(self):
-        return self.phoneNumber
-
-    def set_phone_number(self, number):
-        return self.phoneNumber
-
-    def get_permission_level(self):
-        return self.permission
-
-    def set_permission_level(self, permission):
-        self.permission = permission
-
-    def getFirstName(self):
-        pass
-
-    def getLastName(self):
-        pass
-
-    def getPassword(self):
-        pass
-
-    def getEmailAddress(self):
-        pass
-
-    def getHomeAddress(self):
-        pass
-
-    def getPhoneNumber(self):
-        pass
-
-    def getPermission(self):
-        pass
-
-    def setFirstName(self, firstName):
-        pass
-
-    def setLastName(self, lastName):
-        pass
-
-    def setPassword(self, password):
-        pass
-
-    def setEmailAddress(self, emailAddress):
-        pass
-
-    def setHomeAddress(self, homeAddress):
-        pass
-
-    def setPhoneNumber(self, phoneNumber):
-        pass
-
-    def setPermission(self, permission):
-        pass
-
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
