@@ -130,27 +130,27 @@ class LabSection(models.Model):
     title = models.CharField(max_length=32)
     assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
 
-    def __init__(self, course, title):
-        pass
-
-    def delete(self, using=None, keep_parents=False):
-        pass
-
     # getters/setters
     def getCourse(self):
-        pass
+        return self.course
 
     def getTitle(self):
-        pass
+        return self.title
 
     def getTA(self):
-        pass
+        return self.assignedTA
 
     def setCourse(self, newCourse):
-        pass
+        if newCourse is None:
+            raise ValueError("Cannot set newCourse to None")
+        self.course = newCourse
 
     def setTitle(self, newTitle):
-        pass
+        if newTitle == "":
+            raise ValueError("Cannot set title to empty string")
+        self.title = newTitle
 
     def setTA(self, newTA):
-        pass
+        if newTA is None:
+            raise ValueError("Cannot set assignedTA to None")
+        self.assignedTA = newTA
