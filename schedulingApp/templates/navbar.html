@@ -1,9 +1,12 @@
 <div class="col-sm-2">
-    <h4>{{User.first_name}} {{User.last_name}}</h4>
+
+    <h4>{{profile.user.first_name}} {{profile.user.last_name}}</h4>
     <nav class="nav flex-column">
-        <a class="nav-link" href="#">My Account</a>
-        <a class="nav-link" href="courses.html">Courses</a>
-        <a class="nav-link" href="users.html">User Directory</a>
-        <a class="nav-link" href="logout.html">Logout</a>
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/user/{{ profile.id }}">My Account</a>
+        <a class="nav-link" href="/courses.html">Courses</a>
+        <a class="nav-link" href="/sections.html">Sections</a>
+        <a class="nav-link" href="/users.html">Users</a>
+        <a class="nav-link" href="/logout.html">Logout</a>
     </nav>
 </div>

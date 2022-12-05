@@ -4,67 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create New User</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
-    <style>
-        .btn-primary {
-            background-color: #ffbd00;
-            border-color: #ffbd00;
-            color:black
-        }
-
-        .col-sm-2 {
-            background-color: #ffbd00;
-            height: 100vh;
-            padding: 1% 3%;
-        }
-
-        .col-sm-10 {
-            padding: 5% 25% 5% 5%;
-        }
-
-        .col-sm-10 h1 {
-            font-size: 64px;
-        }
-
-        .col-sm-10 p {
-            font-size: 48px;
-        }
-
-        a {
-            color: black;
-        }
-
-        .container-fluid {
-            padding: 0 0;
-            height: 100vh
-        }
-
-        body {
-            height: 100vh;
-        }
-
-        table {
-            font-family: "Arial", sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 8px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        th {
-            background-color: #00aea9;
-            color: white;
-        }
-
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'global.css' %}"/>
 </head>
 <body>
 <div class="container-fluid">

@@ -1,14 +1,14 @@
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
-from django.views import View
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
+from django.views import View
 
-from schedulingApp.models import Profile, Course
+from schedulingApp.models import Profile, Course, LabSection
 from schedulingApp.permissionTests import user_has_admin_permission
 
 
@@ -40,13 +40,14 @@ class Home(View):
 
 class Users(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, "users.html", {"profiles": Profile.objects.all()})
+        return render(request, "users.html", {"profiles": Profile.objects.all(),
+                                              "profile": Profile.objects.get(user=request.user)})
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddUser(View):
     def get(self, request):
-        return render(request, "addUser.html", {})
+        return render(request, "addUser.html", {"profile": Profile.objects.get(user=request.user)})
 
     def post(self, request):
         try:
@@ -60,6 +61,7 @@ class AddUser(View):
             profile = Profile.objects.get(user=user)
             profile.address = request.POST.get('home-address')
             profile.phoneNumber = request.POST.get("phone-number")
+            profile.permission = request.POST.get("user-role").lower()
 
             user.full_clean()
             profile.full_clean()
@@ -69,19 +71,19 @@ class AddUser(View):
 
         except (ValidationError, ValueError, IntegrityError) as e:
             error = str(e)
-            return render(request, "addUser.html", {"error": error})
+            return render(request, "addUser.html", {"error": error, "profile": Profile.objects.get(user=request.user)})
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddCourse(View):
     def get(self, request):
-        return render(request, "addCourse.html", {})
+        return render(request, "addCourse.html", {"profile": Profile.objects.get(user=request.user)})
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddSection(View):
     def get(self, request):
-        return render(request, "addSection.html", {})
+        return render(request, "addSection.html", {"profile": Profile.objects.get(user=request.user)})
 
 
 # We don't care if a user has logged in for this one
@@ -90,6 +92,23 @@ class LogOut(View):
         logout(request)
         return redirect("login.html")
 
+
 class Courses(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, "courses.html", {"courses": Course.objects.all()})
+        return render(request, "courses.html", {"courses": Course.objects.all(),
+                                                "profile": Profile.objects.get(user=request.user)})
+
+
+class Sections(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, "sections.html", {"sections": LabSection.objects.all(),
+                                                 "profile": Profile.objects.get(user=request.user)})
+
+
+class ViewUser(LoginRequiredMixin, View):
+    def get(self, request, id):
+        profile = Profile.objects.get(user=request.user)
+        if profile.id != id and profile.permission != Profile.ADMIN:
+            return redirect("/")
+        return render(request, "viewUser.html", {"viewing": Profile.objects.get(id=id),
+                                                 "profile": Profile.objects.get(user=request.user)})

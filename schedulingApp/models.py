@@ -1,7 +1,6 @@
-from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 from django.core.validators import RegexValidator
 from django.db import models
-from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
@@ -22,12 +21,12 @@ class Profile(models.Model):
         (ADMIN, 'Admin')
     )
 
-    # email, firstName, lastName, group see django object
+    # email, first_name, last_name, group see django object
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     # Examples of valid formats
     # +1 (555) 555-5555, (555) 555-5555, 555-555-5555, 555 555-5555,
     # 555 555 5555, 555 555 5555 55
-    phoneNumber = models.CharField(max_length=16, validators=[RegexValidator(phoneRegex)])
+    phoneNumber = models.CharField(max_length=24, validators=[RegexValidator(phoneRegex)])
     homeAddress = models.CharField(max_length=64)
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
@@ -47,7 +46,6 @@ class Profile(models.Model):
 
     def set_permission_level(self, permission):
         self.permission = permission
-
 
     def getFirstName(self):
         pass
@@ -95,10 +93,15 @@ class Profile(models.Model):
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        instance.first_name = "admin"
-        instance.last_name = "user"
-        profile = Profile.objects.create(user=instance, phoneNumber="(555) 555-5555", homeAddress="UWM Admins",
-                               permission=Profile.ADMIN)
+        # This is the first user and is therefore the admin user.
+        if len(Profile.objects.all()) == 0:
+            instance.first_name = "admin"
+            instance.last_name = "user"
+            profile = Profile.objects.create(user=instance, phoneNumber="(555) 555-5555", homeAddress="UWM Admins",
+                                             permission=Profile.ADMIN)
+        else:
+            profile = Profile.objects.create(user=instance, phoneNumber="(555) 555-5555", homeAddress="USER",
+                                             permission=Profile.TA)
         profile.save()
         instance.save()
 
@@ -107,8 +110,10 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
+
 class Course(models.Model):
     title = models.CharField(max_length=32)
+    semester = models.CharField(max_length=16)
 
 
 class Assignment(models.Model):
