@@ -1,15 +1,15 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create New User</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Users</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <style>
         .btn-primary {
-            background-color: #55903e;
-            border-color: #9b7f1c;
+            background-color: #ffbd00;
+            border-color: #ffbd00;
+            color:black
         }
 
         .col-sm-2 {
@@ -27,7 +27,7 @@
         }
 
         .container-fluid {
-            padding: 0 0;
+            padding: 0% 0%;
             height: 100vh
         }
 
@@ -35,59 +35,34 @@
             height: 100vh
         }
 
-        table {
-            font-family: "Arial", sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        th, td {
-            text-align: left;
-            padding: 8px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        th {
-            background-color: #00aea9;
-            color: white;
-        }
 
     </style>
 </head>
 <body>
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-sm-2">
-            <h4>John Doe</h4>
-            <nav class="nav flex-column">
-                <a class="nav-link active" href="#">My Account</a>
-                <a class="nav-link" href="#">Courses</a>
-                <a class="nav-link" href="#">User Directory</a>
-                <a class="nav-link" href="#">Logout</a>
-            </nav>
-        </div>
-
-        <div class="col-sm-10">
-            <h1>Registered Users</h1>
-            <table>
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Permission Level</th>
-                    <th>Actions</th>
-                </tr>
-                {% for profile in profiles %}
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'navbar.html' %}
+            <div class="col-sm-10">
+                <h1>Registered Users</h1>
+                <table>
                     <tr>
-                        <td>{{ profile.user.first_name }}</td>
-                        <td>{{ profile.user.last_name }}</td>
-                        <td>{{ profile.permission }}</td>
-                        <td><a href="testing" class="btn btn-primary">More Info</a></td>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Permission Level</th>
+                        <th>Actions</th>
                     </tr>
-                {% endfor %}
-            </table>
+                    {% for profile in profiles %}
+                        <tr>
+                            <td>{{ profile.user.firstName }}</td>
+                            <td>{{ profile.user.lastName }}</td>
+                            <td>{{ profile.permission }}</td>
+                            <td><a href="testing" class="btn btn-primary">More Info</a></td>
+                        </tr>
+
+                    {% endfor %}
+                </table>
+                <a class="btn btn-primary" href="addUser.html">Add User</a>
+            </div>
         </div>
     </div>
 </body>
