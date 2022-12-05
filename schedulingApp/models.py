@@ -40,7 +40,6 @@ def save_user_profile(sender, instance, **kwargs):
 
 class Course(models.Model):
     title = models.CharField(max_length=32)
-    semester = models.CharField(max_length=32) # THIS WILL CAUSE CONFLICTS BUT IS NESSESARY FOR TESTS TO WORK, WHEN RESOLVING DELETE THIS ONE
 
 
 class Assignment(models.Model):
