@@ -91,7 +91,8 @@ class AddCourse(View):
             return redirect("/courses.html")
         except (ValidationError, ValueError, IntegrityError) as e:
             error = str(e)
-            return render(request, "addCourse.html", {"message": error, "semesters": Course.SEMESTER_CHOICES})
+            return render(request, "addCourse.html", {"message": error, "semesters": Course.SEMESTER_CHOICES, 
+                          "profile": Profile.objects.get(user=request.user)})
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
