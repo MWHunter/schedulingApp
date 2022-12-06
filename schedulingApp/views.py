@@ -79,20 +79,22 @@ class AddCourse(View):
     def get(self, request):
         return render(request, "addCourse.html", {"semesters": Course.SEMESTER_CHOICES,
                                                   "profile": Profile.objects.get(user=request.user)})
-
+    
     def post(self, request):
         newCourse = Course(title=request.POST.get('newCourseTitle'), semester=request.POST.get('newCourseSemester'))
         if len(Course.objects.filter(title=newCourse.title, semester=newCourse.semester)) > 0:
             return render(request, "addCourse.html",
-                          {"message": "Course already exists", "semesters": Course.SEMESTER_CHOICES})
+                          {"message": "Course already exists", "semesters": Course.SEMESTER_CHOICES,
+                           "profile": Profile.objects.get(user=request.user)})
+        #Validates input and checks to see if there's already an object in the system.
         try:
             newCourse.full_clean()
             newCourse.save()
             return redirect("/courses.html")
         except (ValidationError, ValueError, IntegrityError) as e:
             error = str(e)
-            return render(request, "addCourse.html", {"message": error, "semesters": Course.SEMESTER_CHOICES, 
-                          "profile": Profile.objects.get(user=request.user)})
+            return render(request, "addCourse.html", {"message": error, "semesters": Course.SEMESTER_CHOICES,
+                                                      "profile": Profile.objects.get(user=request.user)})
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
