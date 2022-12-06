@@ -105,9 +105,19 @@ class CourseToProfessorEntry(models.Model):
 
 
 class LabSection(models.Model):
+    LAB = "lab"
+    LECTURE = "lecture"
+    LAB_TYPE = [
+        (LAB, "LAB"),
+        (LECTURE, "LECTURE"),
+    ]
+
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    time = models.CharField(max_length=16)
     title = models.CharField(max_length=32)
     assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
+    labType = models.CharField(max_length=8, choices=LAB_TYPE, default=LAB)
+
 
     # getters/setters
     def getCourse(self):

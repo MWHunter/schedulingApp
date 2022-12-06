@@ -112,7 +112,9 @@ class AddSection(View):
             section = LabSection(
                 course=course,
                 title=request.POST.get("newSectionNumber"),
-                assignedTA=profile
+                assignedTA=profile,
+                labType=request.POST.get("sectionType").lower(),
+                time=request.POST.get("newSectionTime")
             )
             section.full_clean()
             section.save()
