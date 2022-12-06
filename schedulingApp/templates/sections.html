@@ -14,22 +14,30 @@
         {% include 'navbar.html' %}
         <div class="col-sm-10">
             <h1>Active Sections</h1>
-            <table>
-                <tr>
-                    <th>Section Name</th>
-                    <th>Course Name</th>
-                    <th>Semester</th>
-                    <th>Assigned TA</th>
-                </tr>
-                {% for section in sections %}
+            <table class="table table-hover">
+                    <thead>
                     <tr>
-                        <td>{{ section.title }}</td>
-                        <td>{{ section.course.title }}</td>
-                        <td>{{ section.course.semester }}</td>
-                        <td>{{ section.course.assignedTA.first_Name}}  {{section.course.assignedTA.last_name}}</td>
+                        <th scope="col">Section Name</th>
+                        <th scope="col">Course Name</th>
+                        <th scope="col">Semester</th>
+                        <th scope="col">Section Type</th>
+                        <th scope="col">Section Time</th>
+                        <th scope="col">Assigned TA</th>
                     </tr>
-                {% endfor %}
-            </table>
+                    </thead>
+                    <tbody>
+                    {% for section in sections %}
+                        <tr>
+                            <td>{{ section.title }}</td>
+                            <td>{{ section.course.title }}</td>
+                            <td>{{ section.course.semester }}</td>
+                            <td>{{ section.labType }}</td>
+                            <td>{{ section.time }}</td>
+                            <td>{{ section.course.assignedTA.user.first_Name}}  {{section.course.assignedTA.user.last_name}}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
             <a class="btn btn-primary" href="addSection.html">Add Section</a>
         </div>
     </div>
