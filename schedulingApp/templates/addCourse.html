@@ -25,8 +25,9 @@
                     <div class="form-group">
                         <label for="newCourseSemester">Semester</label>
                         <select class="form-control" name="newCourseSemester" id="newCourseSemester">
-                            <option>Fall 2022</option>
-                            <option>Spring 2023</option>
+                            {% for i in semesters %}
+                            <option value="{{ i.0 }}">{{ i.1 }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                 <br>
