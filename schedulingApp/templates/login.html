@@ -1,20 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TA Scheduling App Login Page</title>
+    <title>UWM TA Scheduling App</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 </head>
+<style>
+    body {
+        background-color: #f5f5f5;
+    }
+
+    .container {
+        width: 400px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .box {
+        margin-top: 50px;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 5px #ccc;
+    }
+
+    .box h2 {
+        margin-bottom: 20px;
+    }
+
+    input {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+    }
+</style>
 <body>
-    <!--Login interface-->
-    <h2>Welcome to the UWM TA Scheduling App!</h2>
-    <form action="#">
-        <label for="loginID">Username</label><br>
-        <input type="text" id="loginID" name="loginID"><br>
-        <label for="loginPassword">Password</label><br>
-        <input type="text" id="loginPassword" name="loginPassword"><br><br>
-        <input type="submit" value="Login">
-      </form>
+<div class="container">
+    <div class="box">
+        <!--Login interface-->
+        <h2>Welcome to the UWM TA Scheduling App!</h2>
+        <form action="#" method="post">
+            {% csrf_token %}
+            <label for="loginID">Email Address</label><br>
+            <input type="text" id="loginID" name="loginID" placeholder="user@uwm.edu"><br>
+            <label for="loginPassword">Password</label><br>
+            <input type="password" id="loginPassword" name="loginPassword" placeholder="********"><br><br>
+            <input class="btn btn-primary" type="submit" value="Login">
+        </form>
+        {% if error %}
+            <p style="color:red">{{ error }}</p>
+        {% endif %}
+    </div>
+</div>
 </body>
 </html>
