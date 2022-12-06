@@ -59,6 +59,7 @@ class Course(models.Model):
     semester = models.CharField(max_length=16)
 
 
+
 class Assignment(models.Model):
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=65536)
