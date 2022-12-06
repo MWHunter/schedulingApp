@@ -120,7 +120,7 @@ class AddSection(View):
             section.save()
             return redirect("sections.html")
 
-        except (ValidationError, ValueError, IntegrityError) as e:
+        except (ValidationError, ValueError, IntegrityError, ObjectDoesNotExist) as e:
             error = str(e)
             return render(request, "addSection.html", {"error": error,
                                                        "profile": Profile.objects.get(user=request.user),
