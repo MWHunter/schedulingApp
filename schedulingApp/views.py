@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
@@ -77,7 +77,24 @@ class AddUser(View):
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddCourse(View):
     def get(self, request):
-        return render(request, "addCourse.html", {"profile": Profile.objects.get(user=request.user)})
+        return render(request, "addCourse.html", {"semesters": Course.SEMESTER_CHOICES,
+                                                  "profile": Profile.objects.get(user=request.user)})
+
+    def post(self, request):
+        newCourse = Course(title=request.POST.get('newCourseTitle'), semester=request.POST.get('newCourseSemester'))
+        #Validates input and checks to see if there's already an object in the system.
+        try:
+            newCourse.full_clean()
+            Course.objects.get(title=newCourse.title, semester=newCourse.semester)
+            return render(request, "addCourse.html", {"message": "Course already exists",
+                                                      "semesters": Course.SEMESTER_CHOICES})
+        except (ValidationError, ValueError, IntegrityError) as e:
+            error = str(e)
+            return render(request, "addCourse.html", {"message": error, "semesters": Course.SEMESTER_CHOICES})
+        #only if there's no object currently in the system and input is valid will the course be created
+        except ObjectDoesNotExist:
+            newCourse.save()
+            return redirect("/courses.html")
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')

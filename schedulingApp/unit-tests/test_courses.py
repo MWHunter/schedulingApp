@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from schedulingApp.models import Course, courseExists
+from schedulingApp.models import Course
 
 
 # Fields: Title
@@ -40,7 +40,7 @@ class CreateCourse(TestCase):
 
     def test_conflictingCourse(self):
         a = Course("CS361", "FA22")
-        with self.assertRaises(ValueError, msg="Course with duplicate name and semester should not be allowed."):
+        with self.assertRaises(ValidationError, msg="Course with duplicate name and semester should not be allowed."):
             b = Course("CS361", "FA22")
             b.full_clean()
 
@@ -122,5 +122,3 @@ class DeleteCourse(TestCase):
             self.theCourse.getTitle()
         with self.assertRaises(NameError, msg="Semester for deleted course should no longer exist."):
             self.theCourse.getSemester()
-
-
