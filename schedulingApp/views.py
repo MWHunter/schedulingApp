@@ -59,7 +59,7 @@ class AddUser(View):
 
             # We idiot-proofed profile creation so we must fetch it now
             profile = Profile.objects.get(user=user)
-            profile.address = request.POST.get('home-address')
+            profile.homeAddress = request.POST.get('home-address')
             profile.phoneNumber = request.POST.get("phone-number")
             profile.permission = request.POST.get("user-role").lower()
 
