@@ -80,7 +80,7 @@ class AddCourse(View):
         return render(request, "addCourse.html", {"semesters": Course.SEMESTER_CHOICES,
                                                   "profile": Profile.objects.get(user=request.user)})
 
-        def post(self, request):
+    def post(self, request):
         newCourse = Course(title=request.POST.get('newCourseTitle'), semester=request.POST.get('newCourseSemester'))
         if len(Course.objects.filter(title=newCourse.title, semester=newCourse.semester)) > 0:
             return render(request, "addCourse.html",
