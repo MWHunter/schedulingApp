@@ -92,6 +92,26 @@ class LogOut(View):
         logout(request)
         return redirect("login.html")
 
+class AddCourse(View):
+    def get(self, request):
+        return render(request, "addCourse.html", {"semesters": Course.SEMESTER_CHOICES})
+
+    def post(self, request):
+        newCourse = Course(title=request.POST.get('newCourseTitle'), semester=request.POST.get('newCourseSemester'))
+        #Validates input and checks to see if there's already an object in the system.
+        try:
+            newCourse.full_clean()
+            Course.objects.get(title=newCourse.title, semester=newCourse.semester)
+            return render(request, "addCourse.html", {"message": "Course already exists",
+                                                      "semesters": Course.SEMESTER_CHOICES})
+        except (ValidationError, ValueError, IntegrityError) as e:
+            error = str(e)
+            return render(request, "addCourse.html", {"message": error, "semesters": Course.SEMESTER_CHOICES})
+        #only if there's no object currently in the system and input is valid will the course be created
+        except ObjectDoesNotExist:
+            newCourse.save()
+            return redirect("/courses.html")
+
 
 class Courses(LoginRequiredMixin, View):
     def get(self, request):
