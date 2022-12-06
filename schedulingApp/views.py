@@ -77,24 +77,8 @@ class AddUser(View):
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddCourse(View):
     def get(self, request):
-        return render(request, "addCourse.html", {"profile": Profile.objects.get(user=request.user)})
-
-
-@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
-class AddSection(View):
-    def get(self, request):
-        return render(request, "addSection.html", {"profile": Profile.objects.get(user=request.user)})
-
-
-# We don't care if a user has logged in for this one
-class LogOut(View):
-    def get(self, request):
-        logout(request)
-        return redirect("login.html")
-
-class AddCourse(View):
-    def get(self, request):
-        return render(request, "addCourse.html", {"semesters": Course.SEMESTER_CHOICES})
+        return render(request, "addCourse.html", {"semesters": Course.SEMESTER_CHOICES,
+                                                  "profile": Profile.objects.get(user=request.user)})
 
     def post(self, request):
         newCourse = Course(title=request.POST.get('newCourseTitle'), semester=request.POST.get('newCourseSemester'))
@@ -111,6 +95,19 @@ class AddCourse(View):
         except ObjectDoesNotExist:
             newCourse.save()
             return redirect("/courses.html")
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class AddSection(View):
+    def get(self, request):
+        return render(request, "addSection.html", {"profile": Profile.objects.get(user=request.user)})
+
+
+# We don't care if a user has logged in for this one
+class LogOut(View):
+    def get(self, request):
+        logout(request)
+        return redirect("login.html")
 
 
 class Courses(LoginRequiredMixin, View):
