@@ -65,7 +65,9 @@ class Course(models.Model):
         (SPRING23, "Spring 2023"),
         (SUMMER23, "Summer 2023"),
     ]
-    title = models.CharField(max_length=32)
+
+    # We want to be able to rename this, so it isn't a primary key, but we also want it to be unique
+    title = models.CharField(max_length=32, unique=True)
     semester = models.CharField(max_length=4, choices=SEMESTER_CHOICES, default=FALL22)
 
     def setTitle(self, newtitle):
@@ -79,7 +81,6 @@ class Course(models.Model):
 
     def getSemester(self):
         return self.semester
-
 
 
 class Assignment(models.Model):
