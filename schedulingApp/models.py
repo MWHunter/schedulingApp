@@ -55,8 +55,30 @@ def save_user_profile(sender, instance, **kwargs):
 
 
 class Course(models.Model):
+    FALL22 = "FA22"
+    WINTERIM22 = "WI22"
+    SPRING23 = "SP23"
+    SUMMER23 = "SU23"
+    SEMESTER_CHOICES = [
+        (FALL22, "Fall 2022"),
+        (WINTERIM22, "Winterim 2022"),
+        (SPRING23, "Spring 2023"),
+        (SUMMER23, "Summer 2023"),
+    ]
     title = models.CharField(max_length=32)
-    semester = models.CharField(max_length=16)
+    semester = models.CharField(max_length=4, choices=SEMESTER_CHOICES, default=FALL22)
+
+    def setTitle(self, newtitle):
+        self.title = newtitle
+
+    def setSemester(self, newsemester):
+        self.semester = newsemester
+
+    def getTitle(self):
+        return self.title
+
+    def getSemester(self):
+        return self.semester
 
 
 
