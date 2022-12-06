@@ -82,7 +82,7 @@ class AddCourse(View):
 
     def post(self, request):
         newCourse = Course(title=request.POST.get('newCourseTitle'), semester=request.POST.get('newCourseSemester'))
-        #Validates input and checks to see if there's already an object in the system.
+        # Validates input and checks to see if there's already an object in the system.
         try:
             newCourse.full_clean()
             Course.objects.get(title=newCourse.title, semester=newCourse.semester)
@@ -91,7 +91,7 @@ class AddCourse(View):
         except (ValidationError, ValueError, IntegrityError) as e:
             error = str(e)
             return render(request, "addCourse.html", {"message": error, "semesters": Course.SEMESTER_CHOICES})
-        #only if there's no object currently in the system and input is valid will the course be created
+        # only if there's no object currently in the system and input is valid will the course be created
         except ObjectDoesNotExist:
             newCourse.save()
             return redirect("/courses.html")
@@ -100,7 +100,30 @@ class AddCourse(View):
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddSection(View):
     def get(self, request):
-        return render(request, "addSection.html", {"profile": Profile.objects.get(user=request.user)})
+        return render(request, "addSection.html", {"profile": Profile.objects.get(user=request.user),
+                                                   "tas": Profile.objects.filter(permission=Profile.TA),
+                                                   "courses": Course.objects.all()})
+
+    def post(self, request):
+        try:
+            course = Course.objects.get(title=request.POST.get("newSectionAssignedCourse"))
+            user = User.objects.get(email=request.POST.get("newSectionInstructor"))
+            profile = Profile.objects.get(user=user)
+            section = LabSection(
+                course=course,
+                title=request.POST.get("newSectionNumber"),
+                assignedTA=profile
+            )
+            section.full_clean()
+            section.save()
+            return redirect("sections.html")
+
+        except (ValidationError, ValueError, IntegrityError) as e:
+            error = str(e)
+            return render(request, "addSection.html", {"error": error,
+                                                       "profile": Profile.objects.get(user=request.user),
+                                                       "tas": Profile.objects.filter(permission=Profile.TA),
+                                                       "courses": Course.objects.all()})
 
 
 # We don't care if a user has logged in for this one
