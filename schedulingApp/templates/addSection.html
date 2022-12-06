@@ -22,6 +22,7 @@
                         <label for="lab">Lab</label><br>
                         <input type="radio" id="lecture" name="sectionType" value="lecture">
                         <label for="lecture">Lecture</label><br>
+                    </div>
                     <div class="form-group">
                         <label for="newSectionNumber">Section Number</label><br>
                         <input type="text" class="form-control" id="newSectionNumber" name="newSectionNumber" placeholder="Enter section number">
@@ -32,30 +33,29 @@
                         <input type="text" class="form-control" id="newSectionTime" name="newSectionTime" placeholder="Enter section time">
                     </div>
                     <div class="form-group">
-                        <label for="newSectionAssignedCourse">Section ID</label>
+                        <label for="newSectionAssignedCourse">Course ID</label>
                         <select class="form-control" name="newSectionAssignedCourse" id="newSectionAssignedCourse">
-                            <option value="course1">Placeholder 1</option>
-                            <option value="course2">Placeholder 2</option>
-                            <option value="course3">Placeholder 3</option>
+                            {% for i in courses %}
+                            <option value='{{ i.title }}'>{{ i.title }}</option>
+                            {% endfor %}
                         </select>
                     </div>
-                    <!--TODO integrate with Django to be able to select associated instructor-->
                     <div class="form-group">
                         <label for="newSectionInstructor">Instructor</label>
                         <select class="form-control" name="newSectionInstructor" id="newSectionInstructor">
-                            <option value="ta1">TA 1</option>
-                            <option value="ta2">TA 2</option>
-                            <option value="professor1">Professor</option>
+                            {% for ta in tas %}
+                            <option value='{{ ta.user.email }}'>{{ ta.user.email }}</option>
+                            {% endfor %}
                         </select>
                     </div>
                     <br>
-                    <button type="button" class="btn btn-secondary">Cancel</button>
+                    <a class="btn btn-secondary" href="sections.html">Cancel</a>
                     <button type="submit" class="btn btn-primary">Create Section</button>
                 </form>
                 {% if error %}
                 <p>{{ error }}</p>
             {% endif%}
-        </div>
+            </div>
         </div>
     </div>
 </body>

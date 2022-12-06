@@ -59,7 +59,7 @@ class AddUser(View):
 
             # We idiot-proofed profile creation so we must fetch it now
             profile = Profile.objects.get(user=user)
-            profile.address = request.POST.get('home-address')
+            profile.homeAddress = request.POST.get('home-address')
             profile.phoneNumber = request.POST.get("phone-number")
             profile.permission = request.POST.get("user-role").lower()
 
@@ -100,7 +100,30 @@ class AddCourse(View):
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddSection(View):
     def get(self, request):
-        return render(request, "addSection.html", {"profile": Profile.objects.get(user=request.user)})
+        return render(request, "addSection.html", {"profile": Profile.objects.get(user=request.user),
+                                                   "tas": Profile.objects.filter(permission=Profile.TA),
+                                                   "courses": Course.objects.all()})
+
+    def post(self, request):
+        try:
+            course = Course.objects.get(title=request.POST.get("newSectionAssignedCourse"))
+            user = User.objects.get(email=request.POST.get("newSectionInstructor"))
+            profile = Profile.objects.get(user=user)
+            section = LabSection(
+                course=course,
+                title=request.POST.get("newSectionNumber"),
+                assignedTA=profile
+            )
+            section.full_clean()
+            section.save()
+            return redirect("sections.html")
+
+        except (ValidationError, ValueError, IntegrityError) as e:
+            error = str(e)
+            return render(request, "addSection.html", {"error": error,
+                                                       "profile": Profile.objects.get(user=request.user),
+                                                       "tas": Profile.objects.filter(permission=Profile.TA),
+                                                       "courses": Course.objects.all()})
 
 
 # We don't care if a user has logged in for this one
