@@ -81,7 +81,6 @@ class Course(models.Model):
         return self.semester
 
 
-
 class Assignment(models.Model):
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=65536)
