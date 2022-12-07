@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -51,23 +51,24 @@ class AddUser(View):
 
     def post(self, request):
         try:
-            user = User.objects.create_user(username=request.POST.get('email-address'),
-                                            email=request.POST.get('email-address'),
-                                            password=request.POST.get('password'),
-                                            first_name=request.POST.get('first-name'),
-                                            last_name=request.POST.get('last-name'))
+            with transaction.atomic():
+                user = User.objects.create_user(username=request.POST.get('email-address'),
+                                                email=request.POST.get('email-address'),
+                                                password=request.POST.get('password'),
+                                                first_name=request.POST.get('first-name'),
+                                                last_name=request.POST.get('last-name'))
 
-            # We idiot-proofed profile creation so we must fetch it now
-            profile = Profile.objects.get(user=user)
-            profile.homeAddress = request.POST.get('home-address')
-            profile.phoneNumber = request.POST.get("phone-number")
-            profile.permission = request.POST.get("user-role").lower()
+                # We idiot-proofed profile creation so we must fetch it now
+                profile = Profile.objects.get(user=user)
+                profile.homeAddress = request.POST.get('home-address')
+                profile.phoneNumber = request.POST.get("phone-number")
+                profile.permission = request.POST.get("user-role").lower()
 
-            user.full_clean()
-            profile.full_clean()
-            user.save()
-            profile.save()
-            return redirect("users.html")
+                user.full_clean()
+                profile.full_clean()
+                user.save()
+                profile.save()
+                return redirect("users.html")
 
         except (ValidationError, ValueError, IntegrityError) as e:
             error = str(e)
@@ -79,14 +80,14 @@ class AddCourse(View):
     def get(self, request):
         return render(request, "addCourse.html", {"semesters": Course.SEMESTER_CHOICES,
                                                   "profile": Profile.objects.get(user=request.user)})
-    
+
     def post(self, request):
         newCourse = Course(title=request.POST.get('newCourseTitle'), semester=request.POST.get('newCourseSemester'))
         if len(Course.objects.filter(title=newCourse.title, semester=newCourse.semester)) > 0:
             return render(request, "addCourse.html",
                           {"message": "Course already exists", "semesters": Course.SEMESTER_CHOICES,
                            "profile": Profile.objects.get(user=request.user)})
-        #Validates input and checks to see if there's already an object in the system.
+        # Validates input and checks to see if there's already an object in the system.
         try:
             newCourse.full_clean()
             newCourse.save()
