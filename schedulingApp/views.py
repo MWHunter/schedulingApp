@@ -47,7 +47,8 @@ class Users(LoginRequiredMixin, View):
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddUser(View):
     def get(self, request):
-        return render(request, "addUser.html", {"profile": Profile.objects.get(user=request.user)})
+        return render(request, "addUser.html", {"profile": Profile.objects.get(user=request.user),
+                                                "roles": Profile.PermissionLevel})
 
     def post(self, request):
         try:
@@ -72,7 +73,8 @@ class AddUser(View):
 
         except (ValidationError, ValueError, IntegrityError) as e:
             error = str(e)
-            return render(request, "addUser.html", {"error": error, "profile": Profile.objects.get(user=request.user)})
+            return render(request, "addUser.html", {"error": error, "profile": Profile.objects.get(user=request.user),
+                                                    "roles": Profile.PermissionLevel})
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
