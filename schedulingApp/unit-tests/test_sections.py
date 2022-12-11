@@ -90,7 +90,12 @@ class TestGetters(TestCase):
 
     def test_getTAValid(self):
         self.assertEqual(self.section.getTA(), self.profile, msg="getTA does not return proper TA")
-
+    
+    def test_addDiscussionSection(self):
+        s = LabSection(course=self.course, title=self.title, assignedTA=self.profile, labType=LabSection.DISCUSSION)
+        self.assertEqual(s.course, self.course, msg="Course not properly set in constructor")
+        self.assertEqual(s.title, self.title, msg="Title not properly set in constructor")
+        self.assertEqual(s.labType, LabSection.DISCUSSION, msg="Section not created with Discussion type")
 
 class TestSetters(TestCase):
     course = None
