@@ -85,22 +85,6 @@ class Course(models.Model):
 class Assignment(models.Model):
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=65536)
-    isTaAssignment = models.BooleanField
-
-
-class CourseToAssignmentEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
-
-
-class SectionToAssignedUserEntry(models.Model):
-    section = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
-
-
-class CourseToAssignedUserEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
 
 
 class Section(models.Model):
@@ -143,3 +127,22 @@ class Section(models.Model):
         if newTA is None:
             raise ValueError("Cannot set assignedTA to None")
         self.assignedTA = newTA
+
+
+class CourseToAssignmentEntry(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
+
+class CourseToAssignedUserEntry(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
+
+
+class SectionToAssignmentEntry(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.DO_NOTHING, null=False)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
+
+
+class SectionToAssignedUserEntry(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.DO_NOTHING, null=False)
+    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
