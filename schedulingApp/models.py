@@ -28,6 +28,7 @@ class Profile(models.Model):
     # 555 555 5555, 555 555 5555 55
     phoneNumber = models.CharField(max_length=24, validators=[RegexValidator(phoneRegex)])
     homeAddress = models.CharField(max_length=64)
+    skills = models.CharField(max_length=4096)
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
                                   default=TA)
@@ -92,29 +93,30 @@ class CourseToAssignmentEntry(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
 
 
-class CourseToAssignedTAEntry(models.Model):
+class SectionToAssignedUserEntry(models.Model):
+    section = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
+
+
+class CourseToAssignedUserEntry(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
-    numAllowedLabs = models.IntegerField
+    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
 
 
-class CourseToProfessorEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedProfessor = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
-
-
-class LabSection(models.Model):
+class Section(models.Model):
     LAB = "lab"
     LECTURE = "lecture"
+    DISCUSSION = "discussion"
     LAB_TYPE = [
         (LAB, "LAB"),
         (LECTURE, "LECTURE"),
+        (DISCUSSION, "DISCUSSION")
     ]
 
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
     time = models.CharField(max_length=16)
     title = models.CharField(max_length=32)
-    assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
+    assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=True)
     labType = models.CharField(max_length=8, choices=LAB_TYPE, default=LAB)
 
 
