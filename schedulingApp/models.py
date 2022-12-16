@@ -86,6 +86,9 @@ class Course(models.Model):
     def removeProfile(self, remprofile):
         pass
 
+    def getAllProfiles(self):
+        pass
+
 
 class Assignment(models.Model):
     title = models.CharField(max_length=64)

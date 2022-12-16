@@ -128,27 +128,50 @@ class AssignUsers(TestCase):
     course = None
     title = "CS361"
     semester = "FA22"
-    profile = None
-    profile2 = None
+    profileTA = None
+    profilePRO = None
+    profileADM = None
 
     def setUp(self) -> None:
         self.course = Course(title=self.title, semester=self.semester)
         user = User()
-        self.profile = Profile(user=user, phoneNumber="123456789", homeAddress="Here", permission=Profile.PROFESSOR)
+        self.profileTA = Profile(user=user, phoneNumber="123456789", homeAddress="Here", permission=Profile.TA)
         user2 = User()
-        self.profile2 = Profile(user=user2, phoneNumber="987654321", homeAddress="There", permission=Profile.TA)
+        self.profilePRO = Profile(user=user2, phoneNumber="987654321", homeAddress="There", permission=Profile.PROFESSOR)
+        user3 = User()
+        self.profileADM = Profile(user=user3, phoneNumber="57890123", homeAddress="Where", permission=Profile.ADMIN)
 
     def test_validAdd(self):
-        pass
+        self.assertFalse(self.course.getAllProfiles().__contains__(self.profileTA),msg="course contains not added profile")
+        self.assertFalse(self.course.getAllProfiles().__contains__(self.profilePRO),msg="course contains not added profile")
+        self.course.addProfile(self.profileTA)
+        self.assertTrue(self.course.getAllProfiles().__contains__(self.profileTA),msg="course does not contain added profile")
+        self.assertFalse(self.course.getAllProfiles().__contains__(self.profilePRO),msg="course contains not added profile")
+        self.course.addProfile(self.profilePRO)
+        self.assertTrue(self.course.getAllProfiles().__contains__(self.profileTA),msg="course does not contain added profile")
+        self.assertTrue(self.course.getAllProfiles().__contains__(self.profilePRO),msg="course does not contain added profile")
 
     def test_addContainedProfile(self):
-        pass
+        self.course.addProfile(self.profileTA)
+        with self.assertRaises(ValueError,msg="adding duplicate profile to course should raise ValueError"):
+            self.course.addProfile(self.profileTA)
 
     def test_addAdmin(self):
-        pass
+        with self.assertRaises(ValueError,msg="adding admin profile to course should raise ValueError"):
+            self.course.addProfile(self.profileADM)
+
+    # Note: Delete tests are currently reliant on addProfile working
+    def del_setup(self):
+        self.assertFalse(self.course.getAllProfiles().__contains__(self.profileTA),msg="course contains not added profile")
+        self.course.addProfile(self.profileTA)
+        self.assertTrue(self.course.getAllProfiles().__contains__(self.profileTA),msg="course does not contain added profile")
 
     def test_validDelete(self):
-        pass
+        self.del_setup()
+        self.course.removeProfile(self.profileTA)
+        self.assertFalse(self.course.getAllProfiles().__contains__(self.profileTA),msg="delete does not remove profile")
 
     def test_deleteNotContainedProfile(self):
-        pass
+        self.del_setup()
+        with self.assertRaises(ValueError, msg="Removing not contained profile should raise ValueError"):
+            self.course.removeProfile(self.profilePRO)
