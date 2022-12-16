@@ -43,6 +43,7 @@
                     <div class="form-group">
                         <label for="newSectionInstructor">Instructor</label>
                         <select class="form-control" name="newSectionInstructor" id="newSectionInstructor">
+                            <option value="None">None</option>
                             {% for ta in tas %}
                             <option value='{{ ta.user.email }}'>{{ ta.user.email }}</option>
                             {% endfor %}
