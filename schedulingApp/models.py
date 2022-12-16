@@ -28,7 +28,7 @@ class Profile(models.Model):
     # 555 555 5555, 555 555 5555 55
     phoneNumber = models.CharField(max_length=24, validators=[RegexValidator(phoneRegex)])
     homeAddress = models.CharField(max_length=64)
-    skills = models.CharField(max_length=4096)
+    skills = models.CharField(max_length=4096, blank=True)
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
                                   default=TA)
