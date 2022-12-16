@@ -1,6 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
-from schedulingApp.models import Course
+from schedulingApp.models import Course, Profile, User
 
 
 # Fields: Title
@@ -122,3 +122,33 @@ class DeleteCourse(TestCase):
             self.theCourse.getTitle()
         with self.assertRaises(NameError, msg="Semester for deleted course should no longer exist."):
             self.theCourse.getSemester()
+
+
+class AssignUsers(TestCase):
+    course = None
+    title = "CS361"
+    semester = "FA22"
+    profile = None
+    profile2 = None
+
+    def setUp(self) -> None:
+        self.course = Course(title=self.title, semester=self.semester)
+        user = User()
+        self.profile = Profile(user=user, phoneNumber="123456789", homeAddress="Here", permission=Profile.PROFESSOR)
+        user2 = User()
+        self.profile2 = Profile(user=user2, phoneNumber="987654321", homeAddress="There", permission=Profile.TA)
+
+    def test_validAdd(self):
+        pass
+
+    def test_addContainedProfile(self):
+        pass
+
+    def test_addAdmin(self):
+        pass
+
+    def test_validDelete(self):
+        pass
+
+    def test_deleteNotContainedProfile(self):
+        pass

@@ -80,6 +80,12 @@ class Course(models.Model):
     def getSemester(self):
         return self.semester
 
+    def addProfile(self, newprofile):
+        pass
+
+    def removeProfile(self, remprofile):
+        pass
+
 
 class Assignment(models.Model):
     title = models.CharField(max_length=64)
