@@ -100,7 +100,7 @@ class Section(models.Model):
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
     time = models.CharField(max_length=16)
     title = models.CharField(max_length=32)
-    labType = models.CharField(max_length=16, choices=LAB_TYPE, default=LAB)
+    labType = models.CharField(max_length=10, choices=LAB_TYPE, default=LAB)
 
 
     # getters/setters

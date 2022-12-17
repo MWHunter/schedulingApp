@@ -30,7 +30,7 @@
                         <tr>
                             <td>{{ section.title }}</td>
                             <td>{{ section.course.title }}</td>
-                            <td>{{ section.course.semester }}</td>
+                            <td>{{ section.course.get_semester_display }}</td>
                             <td>{{ section.labType }}</td>
                             <td>{{ section.time }}</td>
                             <td>{{ section.assignedTA.user.first_name}}  {{section.assignedTA.user.last_name}}</td>
