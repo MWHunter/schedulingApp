@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from schedulingApp.models import Profile, Course, LabSection
+from schedulingApp.models import Profile, Course, Section, SectionToAssignedUserEntry
 from schedulingApp.permissionTests import user_has_admin_permission
 
 
@@ -47,7 +47,8 @@ class Users(LoginRequiredMixin, View):
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddUser(View):
     def get(self, request):
-        return render(request, "addUser.html", {"profile": Profile.objects.get(user=request.user)})
+        return render(request, "addUser.html", {"profile": Profile.objects.get(user=request.user),
+                                                "roles": Profile.PermissionLevel})
 
     def post(self, request):
         try:
@@ -72,7 +73,8 @@ class AddUser(View):
 
         except (ValidationError, ValueError, IntegrityError) as e:
             error = str(e)
-            return render(request, "addUser.html", {"error": error, "profile": Profile.objects.get(user=request.user)})
+            return render(request, "addUser.html", {"error": error, "profile": Profile.objects.get(user=request.user),
+                                                    "roles": Profile.PermissionLevel})
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
@@ -108,17 +110,22 @@ class AddSection(View):
     def post(self, request):
         try:
             course = Course.objects.get(title=request.POST.get("newSectionAssignedCourse"))
-            user = User.objects.get(email=request.POST.get("newSectionInstructor"))
-            profile = Profile.objects.get(user=user)
-            section = LabSection(
+            user = User.objects.filter(email=request.POST.get("newSectionInstructor")).first()
+            section = Section(
                 course=course,
                 title=request.POST.get("newSectionNumber"),
-                assignedTA=profile,
                 labType=request.POST.get("sectionType").lower(),
                 time=request.POST.get("newSectionTime")
             )
             section.full_clean()
             section.save()
+
+            if user is not None:
+                profile = Profile.objects.get(user=user)
+                assigned = SectionToAssignedUserEntry(section=section, assignedUser=profile)
+                assigned.full_clean()
+                assigned.save()
+
             return redirect("sections.html")
 
         except (ValidationError, ValueError, IntegrityError, ObjectDoesNotExist) as e:
@@ -144,7 +151,12 @@ class Courses(LoginRequiredMixin, View):
 
 class Sections(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, "sections.html", {"sections": LabSection.objects.all(),
+        sections = Section.objects.all()
+
+        for s in sections:
+            s.assigned = SectionToAssignedUserEntry.objects.filter(section=s)
+
+        return render(request, "sections.html", {"sections": sections,
                                                  "profile": Profile.objects.get(user=request.user)})
 
 
