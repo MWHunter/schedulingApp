@@ -19,6 +19,10 @@
                     <tr>
                         <th scope="col">Course Name</th>
                         <th scope="col">Course Semester</th>
+                        <th scope="col">Course Instructors</th>
+                        <!--Empty columns to keep buttons organized inside table-->
+                        <th scope="col"></th>
+                        <th scope="col"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -26,6 +30,10 @@
                         <tr>
                             <td>{{ course.title }}</td>
                             <td>{{ course.get_semester_display }}</td>
+                            <!--TODO update this table row to display assigned instructor(s)-->
+                            <td>{{ course.get_semester_display }}</td>
+                            <td><a class="btn btn-primary" href="assignCourseUser.html">Assign User</a></td>
+                            <td><a class="btn btn-primary" href="#">Delete Course</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
