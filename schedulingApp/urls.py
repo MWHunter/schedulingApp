@@ -30,6 +30,8 @@ urlpatterns = [
     path('addUser.html', AddUser.as_view()),
     path('addCourse.html', AddCourse.as_view()),
     path('addSection.html', AddSection.as_view()),
+    path('assignCourseUser.html', AssignCourseUser.as_view()),
+    path('assignSectionUser.html', AssignSectionUser.as_view()),
     path('user/<int:id>', ViewUser.as_view()),
     path('', Home.as_view())
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_URL)
