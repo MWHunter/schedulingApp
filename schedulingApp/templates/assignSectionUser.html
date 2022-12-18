@@ -24,6 +24,13 @@
                             {% endfor %}
                         </select>
                     </div>
+                    {% for instructor in instructors %}
+                        {% if instructor.TA %}
+                            <h6>{{ instructor.user.email }} skills:</h6>
+                            #placeholder variable until this is fully implemented
+                            {{ instructor.user.skills}}
+                        {% endif %}
+                    {% endfor %}
                     <br>
                     <a class="btn btn-secondary" href="sections.html">Cancel</a>
                     <button type="submit" class="btn btn-primary">Assign instructor</button>
