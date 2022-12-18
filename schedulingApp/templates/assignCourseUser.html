@@ -17,8 +17,8 @@
                 <form action="#" method="post">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="newSectionInstructor">Instructor</label>
-                        <select class="form-control" name="newSectionInstructor" id="newSectionInstructor">
+                        <label for="assignedCourseInstructor">Instructor</label>
+                        <select class="form-control" name="assignedCourseInstructor" id="assignedCourseInstructor">
                             {% for instructor in instructors %}
                             <option value='{{ instructor.user.email }}'>{{ instructor.user.email }}</option>
                             {% endfor %}
