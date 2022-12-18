@@ -30,8 +30,14 @@ class TestInit(TestCase):
             s.full_clean()  # Note: is for validation
 
     def test_invalidTA(self):
-        with self.assertRaises(ValueError, msg="Invalid Title fails to raise ValueError"):
-            s = Section(course=self.course, title=self.title, assignedTA="TA")
+        with self.assertRaises(ValueError, msg="Invalid TA fails to raise ValueError"):
+            s = LabSection(course=self.course, title=self.title, assignedTA="TA")
+
+    def test_noneAssignedTA(self):
+        s = LabSection(course=self.course, title=self.title, assignedTA=None)
+        self.assertFalse(print(hasattr(s,'assignedTA')),msg="assignedTA being set when None is given")
+        s2 = LabSection(course=self.course, title=self.title)
+        self.assertFalse(print(hasattr(s2,'assignedTA')),msg="assignedTA being set when nothing is given")
 
 
 class TestDelete(TestCase):
@@ -160,6 +166,6 @@ class TestSetters(TestCase):
         self.section.setTA(self.profile2)
         self.assertEqual(self.section.assignedTA, self.profile2, msg="setTA does not set the TA properly")
 
-    def test_setTAInvalid(self):
-        with self.assertRaises(ValueError, msg="Setting TA to invalid value should raise ValueError"):
-            self.section.setTA(None)
+    # def test_setTAInvalid(self):
+    #     with self.assertRaises(ValueError, msg="Setting TA to invalid value should raise ValueError"):
+    #         self.section.setTA(None)
