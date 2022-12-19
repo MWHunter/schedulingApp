@@ -33,6 +33,12 @@ class Profile(models.Model):
                                   choices=PermissionLevel,
                                   default=TA)
 
+    def setSkills(self, skills):
+        self.skills = skills
+
+    def getSkills(self):
+        return self.skills
+
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
