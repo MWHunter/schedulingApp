@@ -69,6 +69,15 @@ class Course(models.Model):
     title = models.CharField(max_length=32)
     semester = models.CharField(max_length=4, choices=SEMESTER_CHOICES, default=FALL22)
 
+    def addUserToCourse(self, user):
+        entry = CourseToAssignedUserEntry(course=self, assignedUser=user)
+        entry.full_clean()
+        entry.save()
+
+    def removeUserFromCourse(self, user):
+        entry = CourseToAssignedUserEntry.objects.get(course=self, assignedUser=user)
+        entry.delete()
+
     def setTitle(self, newtitle):
         self.title = newtitle
 
@@ -101,6 +110,15 @@ class Section(models.Model):
     time = models.CharField(max_length=16)
     title = models.CharField(max_length=32)
     labType = models.CharField(max_length=10, choices=LAB_TYPE, default=LAB)
+
+    def addUserToSection(self, user):
+        entry = SectionToAssignedUserEntry(course=self, assignedUser=user)
+        entry.full_clean()
+        entry.save()
+
+    def removeUserFromSection(self, user):
+        entry = SectionToAssignedUserEntry.objects.get(course=self, assignedUser=user)
+        entry.delete()
 
 
     # getters/setters
