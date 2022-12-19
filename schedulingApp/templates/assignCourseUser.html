@@ -9,30 +9,40 @@
     <link rel="stylesheet" type="text/css" href="{% static 'global.css' %}"/>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            {% include 'navbar.html' %}
-            <div class="col-sm-10">
-                <h1>Assign Instructor to Course</h1>
-                <form action="#" method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="assignedCourseInstructor">Instructor</label>
-                        <select class="form-control" name="assignedCourseInstructor" id="assignedCourseInstructor">
-                            {% for instructor in instructors %}
-                            <option value='{{ instructor.user.email }}'>{{ instructor.user.email }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <br>
-                    <a class="btn btn-secondary" href="courses.html">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Assign instructor</button>
-                </form>
-                {% if error %}
-                <p>{{ error }}</p>
-            {% endif%}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'navbar.html' %}
+        <div class="col-sm-10">
+            <h1>Assign Instructor to Course</h1>
+            <div class="form-group">
+                <label for="assignedCourseInstructor">Instructor</label>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>
+                            {% if user in courseUsers %}
+                                <form method="post" action="/delete_user_from_course/{{ user.id }}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            {% else %}
+                                <form method="post" action="/add_user_to_course/{{ user.id }}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success">Add</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
             </div>
+            <br>
+            <a class="btn btn-secondary" href="courses.html">Cancel</a>
+            <button type="submit" class="btn btn-primary">Assign instructor</button>
+            {% if error %}
+                <p>{{ error }}</p>
+            {% endif %}
         </div>
     </div>
+</div>
 </body>
 </html>

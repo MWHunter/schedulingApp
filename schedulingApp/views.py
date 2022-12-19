@@ -102,9 +102,35 @@ class AddCourse(View):
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AssignCourseUser(View):
-    def get(self, request):
+    def get(self, request, id):
+        course = Course.objects.get(id=id)
         return render(request, "assignCourseUser.html", {"profile": Profile.objects.get(user=request.user),
-                                                   "instructors": Profile.objects.filter(permission=Profile.TA or Profile.PROFESSOR)})
+                                                         "users": Profile.objects.filter(
+                                                             permission=Profile.TA or Profile.PROFESSOR)})
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class AddUserToCourse(View):
+    def post(self, request, id):
+        return redirect(request.META['HTTP_REFERER'])
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class RemoveUserFromCourse(View):
+    def post(self, request, id):
+        return redirect(request.META['HTTP_REFERER'])
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class AddUserToSection(View):
+    def post(self, request, id):
+        return redirect(request.META['HTTP_REFERER'])
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class RemoveUserFromSection(View):
+    def post(self, request, id):
+        return redirect(request.META['HTTP_REFERER'])
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
@@ -142,12 +168,15 @@ class AddSection(View):
                                                        "tas": Profile.objects.filter(permission=Profile.TA),
                                                        "courses": Course.objects.all()})
 
-        
+
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AssignSectionUser(View):
-    def get(self, request):
+    def get(self, request, id):
+        section = Section.objects.get(id=id)
         return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
-                                                   "instructors": Profile.objects.filter(permission=Profile.TA or Profile.PROFESSOR)})
+                                                          "instructors": Profile.objects.filter(
+                                                              permission=Profile.TA or Profile.PROFESSOR)})
+
 
 # We don't care if a user has logged in for this one
 class LogOut(View):

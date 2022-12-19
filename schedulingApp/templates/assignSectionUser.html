@@ -9,37 +9,33 @@
     <link rel="stylesheet" type="text/css" href="{% static 'global.css' %}"/>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            {% include 'navbar.html' %}
-            <div class="col-sm-10">
-                <h1>Assign Instructor to Section</h1>
-                <form action="#" method="post">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="assignedSectionInstructor">Instructor</label>
-                        <select class="form-control" name="assignedSectionInstructor" id="assignedSectionInstructor">
-                            {% for instructor in instructors %}
-                            <option value='{{ instructor.user.email }}'>{{ instructor.user.email }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {% for instructor in instructors %}
-                        {% if instructor.TA %}
-                            <h6>{{ instructor.user.email }} skills:</h6>
-                            #placeholder variable until this is fully implemented
-                            {{ instructor.user.skills}}
-                        {% endif %}
-                    {% endfor %}
-                    <br>
-                    <a class="btn btn-secondary" href="sections.html">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Assign instructor</button>
-                </form>
-                {% if error %}
-                <p>{{ error }}</p>
-            {% endif%}
+<div class="container-fluid">
+    <div class="row">
+        {% include 'navbar.html' %}
+        <div class="col-sm-10">
+            <div class="form-group">
+                <label for="assignedCourseInstructor">Instructor</label>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>
+                            {% if user in courseUsers %}
+                                <form method="post" action="/delete_user_from_section/{{ user.id }}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            {% else %}
+                                <form method="post" action="/add_user_to_section/{{ user.id }}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success">Add</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
             </div>
         </div>
     </div>
+</div>
 </body>
 </html>
