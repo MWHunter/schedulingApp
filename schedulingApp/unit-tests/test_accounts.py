@@ -4,49 +4,45 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 
-# Fields: EMail Phone Address FirstName LastName PermissionLevel OfficeHours
-class CreateUser(TestCase):
-    def test_emptyEmail(self):
-        with self.assertRaises(ValidationError,
-                               msg="Should raise ValidationError for no arguments, requires a email"):
-            a = User.objects.create_user(username="user", email="", password="pass")
-            a.full_clean()
-
-    def test_emptyPassword(self):
-        with self.assertRaises(ValidationError,
-                               msg="Should raise ValidationError for no arguments, requires a password"):
-            a = User.objects.create_user(username="user", email="test@uwm.edu", password="")
-            a.full_clean()
-
-
 class CreateProfile(TestCase):
     def test_conflictingEmailCreation(self):
-        user = User.objects.create_user(username="user", email="test@uwm.edu", password="pass")
-        profile1 = Profile(user=user, phoneNumber="0123456789", homeAddress="home", permission=Profile.TA)
+        self.user = User.objects.create_user(username="test@uwm.edu", first_name="admin", last_name="user",
+                                             email="test@uwm.edu", password="pass")
+        self.profile1 = Profile(user=self.user, phoneNumber="0123456789", homeAddress="home", permission=Profile.TA,
+                                skills="java")
 
         with self.assertRaises(TypeError, msg="New Email should not match any other account's email"):
-            profile2 = Profile(user=user, phoneNumber="9876543210", homeAddress="home", permission=Profile.TA)
+            self.profile2 = Profile(user=self.user, phoneNumber="9876543210", homeAddress="home", permission=Profile.TA,
+                                    skills="java")
 
     def test_validInfo(self):
-        user = User.objects.create_user(username="user", email="test@uwm.edu", password="pass")
-        self.assertEqual(user.username, "user", msg="User did not successfully create with a valid user name.")
-        self.assertEqual(user.email, "test@uwm.edu", msg="User did not successfully create with a valid email.")
-        self.assertEqual(user.password, "pass", msg="User did not successfully create with a valid password.")
-        profile = Profile(user=user, phoneNumber="0123456789", homeAddress="home", permission=Profile.TA)
-        self.assertEqual(profile.phoneNumber, "0123456789", msg="Profile did not successfully create with a valid "
-                                                                "phone number")
-        self.assertEqual(profile.homeAddress, "home", msg="Profile did not successfully create with a valid home "
-                                                          "address")
-        self.assertEqual(profile.permission, profile.TA, msg="Profile did not successfully create with a valid "
-                                                             "permission")
+        self.user = User.objects.create_user(username="test@uwm.edu", first_name="admin", last_name="user",
+                                             email="test@uwm.edu", password="pass")
+        self.assertEqual(self.user.username, "test@uwm.edu",
+                         msg="User did not successfully create with a valid user name.")
+        self.assertEqual(self.user.first_name, "admin", msg="User did not successfully create with a valid first name.")
+        self.assertEqual(self.user.last_name, "user", msg="User did not successfully create with a valid last name.")
+        self.assertEqual(self.user.email, "test@uwm.edu", msg="User did not successfully create with a valid email.")
+        self.assertEqual(self.user.password, "pass", msg="User did not successfully create with a valid password.")
+
+        self.profile = Profile(user=self.user, phoneNumber="0123456789", homeAddress="home", permission=Profile.TA,
+                               skills="java")
+        self.assertEqual(self.profile.phoneNumber, "0123456789", msg="Profile did not successfully create with a valid "
+                                                                     "phone number")
+        self.assertEqual(self.profile.homeAddress, "home", msg="Profile did not successfully create with a valid home "
+                                                               "address")
+        self.assertEqual(self.profile.permission, Profile.TA, msg="Profile did not successfully create with a valid "
+                                                                  "permission")
+        self.assertEqual(self.profile.skills, "java", msg="Profile did not successfully create with a valid "
+                                                          "skills")
 
 
 class EditAccount(TestCase):
-    theUser = None
-
     def setUp(self):
-        user = User.objects.create_user(username="Robert Smith", email="srobert@uwm.edu", password="pass")
-        profile = Profile(user=user, phoneNumber="2345678901", homeAddress="Someplace Ave 123", permission=Profile.TA)
+        self.user = User.objects.create_user(username="srobert@uwm.edu", first_name="Robert", last_name="Smith",
+                                             email="srobert@uwm.edu", password="pass")
+        self.profile = Profile(user=self.user, phoneNumber="2345678901", homeAddress="Someplace Ave 123",
+                               permission=Profile.TA, skills="java")
 
     # add more test cases
 
@@ -58,6 +54,14 @@ class EditAccount(TestCase):
     def test_blankUsername(self):
         self.assertRaises(TypeError, self.profile.setUsername(),
                           msg="Calling setUserName with a blank argument should throw TypeError")
+
+    def test_blankFirstName(self):
+        self.assertRaises(TypeError, self.profile.setFirstName(),
+                          msg="Calling setFirstName with a blank argument should throw TypeError")
+
+    def test_blankLastName(self):
+        self.assertRaises(TypeError, self.profile.setLastName(),
+                          msg="Calling setLastName with a blank argument should throw TypeError")
 
     def test_blankEmailAddress(self):
         self.assertRaises(TypeError, self.profile.setEmailAddress(),
@@ -79,9 +83,23 @@ class EditAccount(TestCase):
         self.assertRaises(TypeError, self.profile.setPermission(),
                           msg="Calling setPermission with a blank argument should throw TypeError")
 
+    def test_blankSkills(self):
+        self.assertRaises(TypeError, self.profile.setSkills(),
+                          msg="Calling setSkills with a blank argument should throw TypeError")
+
     def test_invalidUsername(self):
         with self.assertRaises(ValidationError, msg="Calling setUserName with no argument should throw ValueError"):
             self.profile.setUsername("")
+            self.profile.full_clean()
+
+    def test_invalidFirstName(self):
+        with self.assertRaises(ValidationError, msg="Calling setFirstName with no argument should throw ValueError"):
+            self.profile.setFirstName("")
+            self.profile.full_clean()
+
+    def test_invalidLastName(self):
+        with self.assertRaises(ValidationError, msg="Calling setLastName with no argument should throw ValueError"):
+            self.profile.setLastName("")
             self.profile.full_clean()
 
     def test_invalidEmailAddress(self):
@@ -113,9 +131,24 @@ class EditAccount(TestCase):
             self.profile.setPermission("")
             self.profile.full_clean()
 
+    def test_invalidSkills(self):
+        with self.assertRaises(ValidationError, msg="Calling setSkills with no argument should throw ValueError"):
+            self.profile.setSkills("")
+            self.profile.full_clean()
+
     def test_changeUsername(self):
-        self.profile.setUsername("Rob Adams")
-        self.assertEqual(self.profile.getUsername(), "Rob Adams",
+        self.profile.setUsername("arob@uwm.edu")
+        self.assertEqual(self.profile.getUsername(), "arob@uwm.edu",
+                         msg="Changing the first name to a new one wasn't successful")
+
+    def test_changeFirstName(self):
+        self.profile.setFirstName("Rob")
+        self.assertEqual(self.profile.getFirstName(), "Rob",
+                         msg="Changing the first name to a new one wasn't successful")
+
+    def test_changeLastName(self):
+        self.profile.setLastName("Adams")
+        self.assertEqual(self.profile.getLastName(), "Adams",
                          msg="Changing the first name to a new one wasn't successful")
 
     def test_changeEmailAddress(self):
@@ -143,76 +176,94 @@ class EditAccount(TestCase):
         self.assertEqual(self.profile.getPermission(), Profile.TA,
                          msg="Changing the permissions to a new value one wasn't successful")
 
+    def test_changeSkills(self):
+        self.profile.setSkills("python")
+        self.assertEqual(self.profile.getSkills(), "python",
+                         msg="Changing the permissions to a new value one wasn't successful")
+
     def test_noChangeUsername(self):
-        self.assertEqual(self.profile.getUsername(), "Robert Smith",
-                         msg="Changing the first name to a new one wasn't successful")
+        self.assertEqual(self.profile.getUsername(), "srobert@uwm.edu",
+                         msg="Not changing the username wasn't successful")
+
+    def test_noChangeFirstName(self):
+        self.assertEqual(self.profile.getFirstName(), "srobert@uwm.edu",
+                         msg="Not changing the first name wasn't successful")
+
+    def test_noChangeLastName(self):
+        self.assertEqual(self.profile.getLastName(), "Robert",
+                         msg="Not changing the last name wasn't successful")
 
     def test_noChangeEmailAddress(self):
-        self.assertEqual(self.profile.getEmailAddress(), "srobert@uwm.edu",
-                         msg="Changing the email to a new one wasn't successful")
+        self.assertEqual(self.profile.getEmailAddress(), "Smith",
+                         msg="Not changing the email wasn't successful")
 
     def test_noChangePassword(self):
         self.assertEqual(self.profile.getPassword(), "pass",
-                         msg="Changing the password to a new one wasn't successful")
+                         msg="Not changing the password wasn't successful")
 
     def test_noChangeHomeAddress(self):
         self.assertEqual(self.profile.getHomeAddress(), "Someplace Ave 123",
-                         msg="Changing the address to a new one wasn't successful")
+                         msg="Not changing the address wasn't successful")
 
     def test_noChangePhoneNumber(self):
         self.assertEqual(self.profile.getPhoneNumber(), "2345678901",
-                         msg="Changing the phone number to a new one wasn't successful")
+                         msg="Not changing the phone number wasn't successful")
 
     def test_noChangePermission(self):
         self.assertEqual(self.profile.getPermission(), Profile.TA,
-                         msg="Changing the permissions to a new value one wasn't successful")
+                         msg="Not changing the permissions wasn't successful")
 
-    # if changing perm level is valid, add the following 2 methods
-    # def test_invalidPermLevel(self):
-    #     pass
-    # def test_editPermissionLevel(self):
-    #     pass
+    def test_noChangeSkills(self):
+        self.assertEqual(self.profile.getSkills(), "java",
+                         msg="Not changing the skills wasn't successful")
 
     # To email used in another account
     def test_toConflictingEmail(self):
-        user1 = User.objects.create_user(username="Rob Adams", email="arob@uwm.edu", password="pass")
-        profile1 = Profile(user=user1, phoneNumber="4567891234", homeAddress="Otherplace Rd 234", permission=Profile.TA)
+        self.user1 = User.objects.create_user(username="arob@uwm.edu", first_name="Rob", last_name="Adams",
+                                              email="arob@uwm.edu", password="pass")
+        self.profile1 = Profile(user=self.user1, phoneNumber="4567891234", homeAddress="Otherplace Rd 234",
+                                permission=Profile.TA, skills="python")
 
-        profile1.setEmailAddress("srobert@uwm.edu")
-        self.assertFalse(profile1.getEmailAddress() == "srobert@uwm.edu",
+        self.profile1.setEmailAddress("srobert@uwm.edu")
+        self.assertFalse(self.profile1.getEmailAddress() == "srobert@uwm.edu",
                          msg="Email should not match any other accounts")
 
     def test_toConflictingPhoneNumbers(self):
-        user1 = User.objects.create_user(username="Rob Adams", email="arob@uwm.edu", password="pass")
-        profile1 = Profile(user=user1, phoneNumber="4567891234", homeAddress="Otherplace Rd 234", permission=Profile.TA)
+        self.user1 = User.objects.create_user(username="arob@uwm.edu", first_name="Rob", last_name="Adams",
+                                              email="arob@uwm.edu", password="pass")
+        self.profile1 = Profile(user=self.user1, phoneNumber="4567891234", homeAddress="Otherplace Rd 234",
+                                permission=Profile.TA, skills="python")
 
-        profile1.setPhoneNumber("2345678901")
-        self.assertFalse(profile1.getPhoneNumber() == "2345678901",
+        self.profile1.setPhoneNumber("2345678901")
+        self.assertFalse(self.profile1.getPhoneNumber() == "2345678901",
                          msg="Phone number should not match any other accounts")
 
 
 class DeleteAccount(TestCase):
-    theUser = None
-
     def test_accountNotFound(self):
-        user = Profile.objects.get(self.theUser)
-        self.assertRaises(NameError, user.delete(),
+        self.profile = Profile.objects.get(Profile)
+        self.assertRaises(NameError, self.profile.delete(),
                           msg="Trying to delete nonexistent user should throw NameError")
 
     def setUp(self):
-        user = User.objects.create_user(username="Robert Smith", email="srobert@uwm.edu", password="pass")
-        profile = Profile(user=user, phoneNumber="2345678901", homeAddress="Someplace Ave 123", permission=Profile.TA)
+        self.user = User.objects.create_user(username="srobert@uwm.edu", first_name="Robert", last_name="Smith",
+                                             email="srobert@uwm.edu", password="pass")
+        self.profile = Profile(user=self.user, phoneNumber="2345678901", homeAddress="Someplace Ave 123",
+                               permission=Profile.TA, skills="java")
 
     def test_deletingCurrentAccount(self):
-        user = Profile.objects.get(self.theUser)
-        self.assertRaises(NameError, user.delete(),
+        self.assertRaises(NameError, Profile.objects.filter(self.profile).delete(),
                           msg="Account should have been deleted")
 
     def test_validAndExistingAccount(self):
-        Profile.objects.filter(self.profile).delete()
+        self.assertFalse(self.profile.getUsername() == "srobert@uwm.edu",
+                         msg="Username for deleted user should no longer exist.")
 
-        self.assertFalse(self.profile.getUsername() == "Robert Smith",
+        self.assertFalse(self.profile.getFirstName() == "Robert",
                          msg="First name for deleted user should no longer exist.")
+
+        self.assertFalse(self.profile.getLastName() == "Smith",
+                         msg="Last name for deleted user should no longer exist.")
 
         self.assertFalse(self.profile.getEmailAddress() == "srobert@uwm.edu",
                          msg="Email for deleted user should no longer exist.")
@@ -229,3 +280,5 @@ class DeleteAccount(TestCase):
         self.assertFalse(self.profile.getPermission() == Profile.TA,
                          msg="Permission for deleted user should no longer exist.")
 
+        self.assertFalse(self.profile.getSkills() == "java",
+                         msg="Permission for deleted user should no longer exist.")
