@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, PermissionDenied
 from django.test import TestCase
 from schedulingApp.models import Section, Course, Profile, User
 from unittest import mock
@@ -166,6 +166,69 @@ class TestSetters(TestCase):
         self.section.setTA(self.profile2)
         self.assertEqual(self.section.assignedTA, self.profile2, msg="setTA does not set the TA properly")
 
-    # def test_setTAInvalid(self):
-    #     with self.assertRaises(ValueError, msg="Setting TA to invalid value should raise ValueError"):
-    #         self.section.setTA(None)
+    def test_setTAInvalid(self):
+        with self.assertRaises(ValueError, msg="Setting TA to invalid value should raise ValueError"):
+            self.section.setTA(None)
+
+            
+class TestUserAssignmentInstructor(TestCase):
+    course = None
+    title = "CS361-01"
+    profile = None
+    profProfile = None
+    section = None
+    course2 = None
+    title2 = "CS431-01"
+    profile2 = None
+
+    def setUp(self) -> None:
+        theProf = User()
+        self.profProfile = Profile(user=theProf, phoneNumber="2345678900", homeAddress="Easy st", permission=Profile.PROFESSOR)
+        self.course = Course(title="CS361", semester="FA22")
+
+        user = User()
+        self.profile = Profile(user=user, phoneNumber="123456789", homeAddress="Here", permission=Profile.TA)
+        self.section = Section(course=self.course, title=self.title, assignedTA=self.profile)
+
+        self.course2 = Course(title="CS431", semester="SP23")
+        user2 = User()
+        self.profile2 = Profile(user=user2, phoneNumber="987654321", homeAddress="There", permission=Profile.TA)
+
+    def test_assignTAValid(self):
+        self.assertEqual(Profile.PROFESSOR, self.profProfile.PermissionLevel,
+                         msg="Professor does not have correct permissions level")
+        self.section.setTA(self.profile2)
+        self.assertEqual(self.section.assignedTA, self.profile2, msg="setTA does not set the TA properly")
+
+    def test_setTAInvalidPermission(self):
+        self.profProfile.PermissionLevel = Profile.TA
+        self.assertEquals(self.profProfile.permission, Profile.TA,
+                          msg="Professor profile needs to have TA permissions for failing test")
+        with self.assertRaises(PermissionDenied, msg="Assigned user with TA permissions shouldn't be able to add users"):
+            self.section.setTA(self.profile2)
+
+    def test_setTANotAssignedToCourse(self):
+        self.assertFalse(self.profProfile in self.course.getAllProfiles(),
+                        msg="Professor should not be assigned to course for non-assigned test")
+        self.assertEqual(Profile.PROFESSOR, self.profProfile.PermissionLevel,
+                         msg="Professor does not have correct permissions level")
+        with self.assertRaises(PermissionDenied,
+                               msg="User with correct permissions but not assigned to course should not be able to assign TA"):
+            self.section.setTA(self.profile2)
+
+    def test_setTANotAssignedInvalidPermissions(self):
+        self.profProfile.PermissionLevel = Profile.TA
+        self.assertEquals(self.profProfile.permission, Profile.TA,
+                          msg="Professor profile needs to have TA permissions for failing test")
+        self.assertFalse(self.profProfile in self.course.getAllProfiles(),
+                        msg="Professor should not assigned to course for non-assigned test")
+        with self.assertRaises(PermissionDenied,
+                               msg="User with TA permissions and not assigned to course should not be able to assign TA"):
+            self.section.setTA(self.profile2)
+
+    def test_setTAAlreadyAssigned(self):
+        self.section.setTA(self.profile)
+        self.assertEquals(self.profile, self.section.assignedTA,
+                        msg="TA needs to be assigned to section before testing adding duplicate")
+        self.assertRaises(ValidationError, self.section.setTA(self.profile),
+                          msg="Allows assignment of same TA twice to one section")

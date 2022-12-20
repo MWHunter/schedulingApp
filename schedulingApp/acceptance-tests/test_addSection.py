@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
-
 import schedulingApp
 from schedulingApp.models import Profile, Section, Course, SectionToAssignedUserEntry
 
