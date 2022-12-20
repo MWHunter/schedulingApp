@@ -13,27 +13,47 @@
     <div class="row">
         {% include 'navbar.html' %}
         <div class="col-sm-10">
-            <div class="form-group">
-                <label for="assignedCourseInstructor">Instructor</label>
-                {% for user in users %}
+            <h1>Assign User to Section</h1>
+                    <h4>Available Users</h4>
+            <table class="table table-hover">
+                    <thead>
                     <tr>
-                        <td>{{ user.username }}</td>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Permissions Level</th>
+                        <th scope="col">Skills</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr>
+                        <td>{{ user.user.first_name }}</td>
+                        <td>{{ user.user.last_name }}</td>
+                        <td>{{ user.permission }}</td>
+                        <td>{{ user.skills }}</td>
                         <td>
                             {% if user in courseUsers %}
                                 <form method="post" action="/delete_user_from_section/{{ user.id }}">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <button type="submit" class="btn btn-danger">Remove</button>
                                 </form>
                             {% else %}
                                 <form method="post" action="/add_user_to_section/{{ user.id }}">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-success">Add</button>
+                                    <button type="submit" class="btn btn-success">Assign</button>
                                 </form>
                             {% endif %}
                         </td>
-                    </tr>
-                {% endfor %}
-            </div>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <a class="btn btn-secondary" href="/sections.html">Cancel</a>
+                {% if error %}
+                    <p>{{ error }}</p>
+                {% endif %}
         </div>
     </div>
 </div>
