@@ -28,9 +28,16 @@ class Profile(models.Model):
     # 555 555 5555, 555 555 5555 55
     phoneNumber = models.CharField(max_length=24, validators=[RegexValidator(phoneRegex)])
     homeAddress = models.CharField(max_length=64)
+    skills = models.CharField(max_length=4096, blank=True)
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
                                   default=TA)
+
+    def setSkills(self, skills):
+        self.skills = skills
+
+    def getSkills(self):
+        return self.skills
 
 
 @receiver(post_save, sender=User)
@@ -68,6 +75,15 @@ class Course(models.Model):
     title = models.CharField(max_length=32)
     semester = models.CharField(max_length=4, choices=SEMESTER_CHOICES, default=FALL22)
 
+    def addUserToCourse(self, user):
+        entry = CourseToAssignedUserEntry(course=self, assignedUser=user)
+        entry.full_clean()
+        entry.save()
+
+    def removeUserFromCourse(self, user):
+        entry = CourseToAssignedUserEntry.objects.get(course=self, assignedUser=user)
+        entry.delete()
+
     def setTitle(self, newtitle):
         self.title = newtitle
 
@@ -80,42 +96,44 @@ class Course(models.Model):
     def getSemester(self):
         return self.semester
 
+    def addProfile(self, newprofile):
+        pass
+
+    def removeProfile(self, remprofile):
+        pass
+
+    def getAllProfiles(self):
+        pass
+
 
 class Assignment(models.Model):
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=65536)
-    isTaAssignment = models.BooleanField
 
 
-class CourseToAssignmentEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
-
-
-class CourseToAssignedTAEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
-    numAllowedLabs = models.IntegerField
-
-
-class CourseToProfessorEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedProfessor = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
-
-
-class LabSection(models.Model):
+class Section(models.Model):
     LAB = "lab"
     LECTURE = "lecture"
+    DISCUSSION = "discussion"
     LAB_TYPE = [
         (LAB, "LAB"),
         (LECTURE, "LECTURE"),
+        (DISCUSSION, "DISCUSSION")
     ]
 
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
     time = models.CharField(max_length=16)
     title = models.CharField(max_length=32)
-    assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
-    labType = models.CharField(max_length=8, choices=LAB_TYPE, default=LAB)
+    labType = models.CharField(max_length=10, choices=LAB_TYPE, default=LAB)
+
+    def addUserToSection(self, user):
+        entry = SectionToAssignedUserEntry(course=self, assignedUser=user)
+        entry.full_clean()
+        entry.save()
+
+    def removeUserFromSection(self, user):
+        entry = SectionToAssignedUserEntry.objects.get(course=self, assignedUser=user)
+        entry.delete()
 
 
     # getters/setters
@@ -142,3 +160,22 @@ class LabSection(models.Model):
         if newTA is None:
             raise ValueError("Cannot set assignedTA to None")
         self.assignedTA = newTA
+
+
+class CourseToAssignmentEntry(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
+
+class CourseToAssignedUserEntry(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
+
+
+class SectionToAssignmentEntry(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.DO_NOTHING, null=False)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
+
+
+class SectionToAssignedUserEntry(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.DO_NOTHING, null=False)
+    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)

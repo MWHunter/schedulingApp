@@ -16,22 +16,28 @@ class TestInit(TestCase):
         self.profile = Profile(user=user, phoneNumber="123456789", homeAddress="Here", permission=Profile.TA)
 
     def test_validArgs(self):
-        s = LabSection(course=self.course, title=self.title, assignedTA=self.profile)
+        s = Section(course=self.course, title=self.title, assignedTA=self.profile)
         self.assertEqual(s.course, self.course, msg="Course not properly set in constructor")
         self.assertEqual(s.title, self.title, msg="Title not properly set in constructor")
 
     def test_invalidCourse(self):
         with self.assertRaises(ValueError, msg="Invalid Course fails to raise ValueError"):
-            s = LabSection(course="course", title=self.title, assignedTA=self.profile)
+            s = Section(course="course", title=self.title, assignedTA=self.profile)
 
     def test_blankTitle(self):
         with self.assertRaises(ValidationError, msg="Invalid Title fails to raise ValidationError"):
-            s = LabSection(course=self.course, title="", assignedTA=self.profile)
+            s = Section(course=self.course, title="", assignedTA=self.profile)
             s.full_clean()  # Note: is for validation
 
     def test_invalidTA(self):
-        with self.assertRaises(ValueError, msg="Invalid Title fails to raise ValueError"):
+        with self.assertRaises(ValueError, msg="Invalid TA fails to raise ValueError"):
             s = LabSection(course=self.course, title=self.title, assignedTA="TA")
+
+    def test_noneAssignedTA(self):
+        s = LabSection(course=self.course, title=self.title, assignedTA=None)
+        self.assertFalse(print(hasattr(s,'assignedTA')),msg="assignedTA being set when None is given")
+        s2 = LabSection(course=self.course, title=self.title)
+        self.assertFalse(print(hasattr(s2,'assignedTA')),msg="assignedTA being set when nothing is given")
 
 
 class TestDelete(TestCase):
@@ -44,7 +50,7 @@ class TestDelete(TestCase):
         self.course = Course(title="CS361", semester="FA22")
         user = User()
         self.profile = Profile(user=user, phoneNumber="123456789", homeAddress="Here", permission=Profile.TA)
-        self.section = LabSection(course=self.course, title=self.title, assignedTA=self.profile)
+        self.section = Section(course=self.course, title=self.title, assignedTA=self.profile)
 
     def test_sectionNotFound(self):
         with self.assertRaises(NameError, msg="Trying to delete nonexistent Section should throw NameError"):
@@ -68,7 +74,7 @@ class TestGetters(TestCase):
         self.course = Course(title="CS361", semester="FA22")
         user = User()
         self.profile = Profile(user=user, phoneNumber="123456789", homeAddress="Here", permission=Profile.TA)
-        self.section = LabSection(course=self.course, title=self.title, assignedTA=self.profile)
+        self.section = Section(course=self.course, title=self.title, assignedTA=self.profile)
 
     def test_getCourseArgs(self):
         with self.assertRaises(TypeError, msg="Too many arguments (1) fails to raise TypeError"):
@@ -90,7 +96,12 @@ class TestGetters(TestCase):
 
     def test_getTAValid(self):
         self.assertEqual(self.section.getTA(), self.profile, msg="getTA does not return proper TA")
-
+    
+    def test_addDiscussionSection(self):
+        s = LabSection(course=self.course, title=self.title, assignedTA=self.profile, labType=LabSection.DISCUSSION)
+        self.assertEqual(s.course, self.course, msg="Course not properly set in constructor")
+        self.assertEqual(s.title, self.title, msg="Title not properly set in constructor")
+        self.assertEqual(s.labType, LabSection.DISCUSSION, msg="Section not created with Discussion type")
 
 class TestSetters(TestCase):
     course = None
@@ -105,7 +116,7 @@ class TestSetters(TestCase):
         self.course = Course(title="CS361", semester="FA22")
         user = User()
         self.profile = Profile(user=user, phoneNumber="123456789", homeAddress="Here", permission=Profile.TA)
-        self.section = LabSection(course=self.course, title=self.title, assignedTA=self.profile)
+        self.section = Section(course=self.course, title=self.title, assignedTA=self.profile)
 
         self.course2 = Course(title="CS431", semester="SP23")
         user2 = User()
@@ -221,4 +232,3 @@ class TestUserAssignmentInstructor(TestCase):
                         msg="TA needs to be assigned to section before testing adding duplicate")
         self.assertRaises(ValidationError, self.section.setTA(self.profile),
                           msg="Allows assignment of same TA twice to one section")
-
