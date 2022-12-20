@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import IntegrityError, transaction
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -105,8 +106,8 @@ class AssignCourseUser(View):
     def get(self, request, id):
         course = Course.objects.get(id=id)
         return render(request, "assignCourseUser.html", {"profile": Profile.objects.get(user=request.user),
-                                                         "users": Profile.objects.filter(
-                                                             permission=Profile.TA or Profile.PROFESSOR)})
+                                                         #TODO add courseUsers
+                                                    "users": Profile.objects.filter(Q(permission=Profile.TA) | Q(permission=Profile.PROFESSOR))})
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
@@ -174,8 +175,8 @@ class AssignSectionUser(View):
     def get(self, request, id):
         section = Section.objects.get(id=id)
         return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
-                                                          "instructors": Profile.objects.filter(
-                                                              permission=Profile.TA or Profile.PROFESSOR)})
+                                                          #TODO add courseUsers
+                                                   "users": Profile.objects.filter(Q(permission=Profile.TA) | Q(permission=Profile.PROFESSOR))})
 
 
 # We don't care if a user has logged in for this one
