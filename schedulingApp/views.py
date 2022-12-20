@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.db import IntegrityError, transaction
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
@@ -101,6 +102,39 @@ class AddCourse(View):
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class AssignCourseUser(View):
+    def get(self, request, id):
+        course = Course.objects.get(id=id)
+        return render(request, "assignCourseUser.html", {"profile": Profile.objects.get(user=request.user),
+                                                         #TODO add courseUsers
+                                                    "users": Profile.objects.filter(Q(permission=Profile.TA) | Q(permission=Profile.PROFESSOR))})
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class AddUserToCourse(View):
+    def post(self, request, id):
+        return redirect(request.META['HTTP_REFERER'])
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class RemoveUserFromCourse(View):
+    def post(self, request, id):
+        return redirect(request.META['HTTP_REFERER'])
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class AddUserToSection(View):
+    def post(self, request, id):
+        return redirect(request.META['HTTP_REFERER'])
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class RemoveUserFromSection(View):
+    def post(self, request, id):
+        return redirect(request.META['HTTP_REFERER'])
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddSection(View):
     def get(self, request):
         return render(request, "addSection.html", {"profile": Profile.objects.get(user=request.user),
@@ -134,6 +168,15 @@ class AddSection(View):
                                                        "profile": Profile.objects.get(user=request.user),
                                                        "tas": Profile.objects.filter(permission=Profile.TA),
                                                        "courses": Course.objects.all()})
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class AssignSectionUser(View):
+    def get(self, request, id):
+        section = Section.objects.get(id=id)
+        return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
+                                                          #TODO add courseUsers
+                                                   "users": Profile.objects.filter(Q(permission=Profile.TA) | Q(permission=Profile.PROFESSOR))})
 
 
 # We don't care if a user has logged in for this one
