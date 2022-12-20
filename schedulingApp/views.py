@@ -167,3 +167,33 @@ class ViewUser(LoginRequiredMixin, View):
             return redirect("/")
         return render(request, "viewUser.html", {"viewing": Profile.objects.get(id=id),
                                                  "profile": Profile.objects.get(user=request.user)})
+
+class EditUser(LoginRequiredMixin, View):
+    def get(self, request, id):
+        profile = Profile.objects.get(user=request.user)
+        if profile.id != id and profile.permission != Profile.ADMIN:
+            return redirect("/")
+        return render(request, "editUser.html", {"viewing": Profile.objects.get(id=id),
+                                                 "profile": Profile.objects.get(user=request.user)})
+
+    def post(self, request):
+        try:
+            with transaction.atomic():
+                profile = Profile.objects.get(user=request.user)
+                profile.setEmailAddress(request.POST.get('new-email-address'))
+                profile.setUsername(request.POST.get('new-email-address'))
+                profile.setFirstName(request.POST.get('new-first-name'))
+                profile.setLastName(request.POST.get('new-last-name'))
+                profile.setHomeAddress(request.POST.get('new-home-address'))
+                profile.setPhoneNumber(request.POST.get('new-phone-number'))
+                profile.setSkills(request.POST.get('new-skills'))
+
+                profile.full_clean()
+                profile.save()
+                return redirect("users.html")
+
+        except (ValidationError, ValueError, IntegrityError) as e:
+            error = str(e)
+            return render(request, "editUser.html", {"error": error, "profile": Profile.objects.get(user=request.user),
+                                                     "roles": Profile.PermissionLevel})
+        
