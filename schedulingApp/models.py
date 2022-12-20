@@ -34,6 +34,12 @@ class Profile(models.Model):
 
     def getUsername(self):
         return self.user.username
+    
+    def getFirstName(self):
+        return self.user.first_name
+
+    def getLastName(self):
+        return self.user.last_name
 
     def getEmailAddress(self):
         return self.user.email
@@ -52,6 +58,12 @@ class Profile(models.Model):
 
     def setUsername(self, newUsername):
         self.user.username = newUsername
+        
+    def setFirstName(self, newFirstName):
+        self.user.first_name = newFirstName
+
+    def setLastName(self, newLastName):
+        self.user.last_name = newLastName
 
     def setEmailAddress(self, newEmailAddress):
         self.user.email = newEmailAddress
