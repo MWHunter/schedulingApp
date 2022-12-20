@@ -63,7 +63,7 @@ class Profile(models.Model):
     def getSkills(self):
         return self.skills
     
-       def setUsername(self, newUsername):
+    def setUsername(self, newUsername):
         self.user.username = newUsername
 
     def setFirstName(self, newFirstName):
