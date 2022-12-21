@@ -75,6 +75,12 @@ class Course(models.Model):
     title = models.CharField(max_length=32)
     semester = models.CharField(max_length=4, choices=SEMESTER_CHOICES, default=FALL22)
 
+    def getUsersAssignedToCourse(self):
+        users = []
+        for entry in CourseToAssignedUserEntry.objects.filter(course=self):
+            users.append(entry.assignedUser)
+        return users
+
     def addUserToCourse(self, user):
         entry = CourseToAssignedUserEntry(course=self, assignedUser=user)
         entry.full_clean()
@@ -125,6 +131,12 @@ class Section(models.Model):
     time = models.CharField(max_length=16)
     title = models.CharField(max_length=32)
     labType = models.CharField(max_length=10, choices=LAB_TYPE, default=LAB)
+
+    def getUsersAssignedToCourse(self):
+        users = []
+        for entry in SectionToAssignedUserEntry.objects.filter(section=self):
+            users.append(entry.assignedUser)
+        return users
 
     def addUserToSection(self, user):
         entry = SectionToAssignedUserEntry(course=self, assignedUser=user)
