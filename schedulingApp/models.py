@@ -33,11 +33,8 @@ class Profile(models.Model):
                                   choices=PermissionLevel,
                                   default=TA)
 
-   def getUsername(self):
+    def getUsername(self):
         return self.user.username
-
-    def getUserName(self):
-        return self.user.first_name
 
     def getFirstName(self):
         return self.user.first_name
@@ -62,9 +59,9 @@ class Profile(models.Model):
 
     def getSkills(self):
         return self.skills
-    
+
     def setUsername(self, newUsername):
-        self.user.username = newUsername
+        self.username = newUsername
 
     def setFirstName(self, newFirstName):
         self.user.first_name = newFirstName
@@ -76,7 +73,7 @@ class Profile(models.Model):
         self.user.email = newEmailAddress
 
     def setPassword(self, newPassword):
-        self.user.password = newPassword
+        self.user.set_password(newPassword)
 
     def setHomeAddress(self, newHomeAddress):
         self.homeAddress = newHomeAddress
