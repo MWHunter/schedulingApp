@@ -12,7 +12,6 @@ from django.views import View
 from schedulingApp.models import Profile, Course, Section, SectionToAssignedUserEntry
 from schedulingApp.permissionTests import user_has_admin_permission
 
-
 class Login(View):
     def get(self, request):
         # You are logged in already, you don't belong here
@@ -24,7 +23,9 @@ class Login(View):
         # If you wish to create a user, the code is
         # user = User.objects.create_user('name', 'email', 'password')
         # user.save()
-        user = authenticate(username=request.POST.get('loginID'), password=request.POST.get('loginPassword'))
+        user = User.objects.create_user('jergleblergeflergle', 'bergle@spergle.com', 'wergle')
+        user.save()
+        #user = authenticate(username=request.POST.get('loginID'), password=request.POST.get('loginPassword'))
         if user is not None:
             login(request, user)
             return redirect("/")
@@ -106,45 +107,31 @@ class AssignCourseUser(View):
     def get(self, request, id):
         course = Course.objects.get(id=id)
         return render(request, "assignCourseUser.html", {"profile": Profile.objects.get(user=request.user),
-                                                         "course": course,
-                                                         "courseUsers": course.getUsersAssignedToCourse(),
-                                                         "users": Profile.objects.filter(Q(permission=Profile.TA) | Q(
-                                                             permission=Profile.PROFESSOR))})
+                                                         #TODO add courseUsers
+                                                    "users": Profile.objects.filter(Q(permission=Profile.TA) | Q(permission=Profile.PROFESSOR))})
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddUserToCourse(View):
-    def post(self, request, courseID, userID):
-        course = Course.objects.get(id=courseID)
-        user = Profile.objects.get(id=userID)
-        course.addUserToCourse(user)
+    def post(self, request, id):
         return redirect(request.META['HTTP_REFERER'])
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class RemoveUserFromCourse(View):
-    def post(self, request, courseID, userID):
-        course = Course.objects.get(id=courseID)
-        user = Profile.objects.get(id=userID)
-        course.removeUserFromCourse(user)
+    def post(self, request, id):
         return redirect(request.META['HTTP_REFERER'])
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class AddUserToSection(View):
-    def post(self, request, courseID, userID):
-        section = Section.objects.get(id=courseID)
-        user = Profile.objects.get(id=userID)
-        section.addUserToCourse(user)
+    def post(self, request, id):
         return redirect(request.META['HTTP_REFERER'])
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class RemoveUserFromSection(View):
-    def post(self, request, courseID, userID):
-        section = Section.objects.get(id=courseID)
-        user = Profile.objects.get(id=userID)
-        section.removeUserFromSection(user)
+    def post(self, request, id):
         return redirect(request.META['HTTP_REFERER'])
 
 
@@ -189,10 +176,8 @@ class AssignSectionUser(View):
     def get(self, request, id):
         section = Section.objects.get(id=id)
         return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
-                                                          "course": section,
-                                                          "courseUsers": section.getUsersAssignedToCourse(),
-                                                          "users": Profile.objects.filter(Q(permission=Profile.TA) | Q(
-                                                              permission=Profile.PROFESSOR))})
+                                                          #TODO add courseUsers
+                                                   "users": Profile.objects.filter(Q(permission=Profile.TA) | Q(permission=Profile.PROFESSOR))})
 
 
 # We don't care if a user has logged in for this one
@@ -221,53 +206,20 @@ class Sections(LoginRequiredMixin, View):
 
 class ViewUser(LoginRequiredMixin, View):
     def get(self, request, id):
-        profile = Profile.objects.get(id=id)
-        requestProfile = Profile.objects.get(user=request.user)
-        if profile != requestProfile and requestProfile.permission != Profile.ADMIN:
+        profile = Profile.objects.get(user=request.user)
+        if profile.id != id and profile.permission != Profile.ADMIN:
             return redirect("/")
         return render(request, "viewUser.html", {"viewing": Profile.objects.get(id=id),
                                                  "profile": Profile.objects.get(user=request.user)})
 
-
-class EditUser(LoginRequiredMixin, View):
-    def get(self, request, id):
-        profile = Profile.objects.get(id=id)
-        requestProfile = Profile.objects.get(user=request.user)
-        if profile != requestProfile and requestProfile.permission != Profile.ADMIN:
-            return redirect("/")
-        return render(request, "editUser.html", {"viewing": Profile.objects.get(id=id),
-                                                 "profile": Profile.objects.get(user=request.user)})
-
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class DeleteSection(View):
     def post(self, request, id):
-        try:
-            with transaction.atomic():
-                profile = Profile.objects.get(id=id)
-                if request.POST.get('new-email-address') != "":
-                    profile.setEmailAddress(request.POST.get('new-email-address'))
-                if request.POST.get('new-email-address') != "":
-                    profile.setUsername(request.POST.get('new-email-address'))
-                if request.POST.get('new-password') != "":
-                    profile.setPassword(request.POST.get('new-password'))
-                if request.POST.get('new-first-name') != "":
-                    profile.setFirstName(request.POST.get('new-first-name'))
-                if request.POST.get('new-last-name') != "":
-                    profile.setLastName(request.POST.get('new-last-name'))
-                if request.POST.get('new-home-address') != "":
-                    profile.setHomeAddress(request.POST.get('new-home-address'))
-                if request.POST.get('new-phone-number') != "":
-                    profile.setPhoneNumber(request.POST.get('new-phone-number'))
-                if request.POST.get('new-skills') != "":
-                    profile.setSkills(request.POST.get('new-skills'))
+        request.delete()
+        return redirect('sections.html')
 
-                profile.user.full_clean()
-                profile.full_clean()
-                profile.user.save()
-                profile.save()
-
-
-                return redirect("users.html")
-
-        except (ValidationError, ValueError, IntegrityError) as e:
-            error = str(e)
-            return render(request, "editUser.html", {"error": error, "profile": Profile.objects.get(user=request.user),
-                                                     "roles": Profile.PermissionLevel})
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class DeleteCourse(View):
+    def post(self, request, id):
+        request.delete()
+        return redirect('sections.html')
