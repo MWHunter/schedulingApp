@@ -37,5 +37,7 @@ urlpatterns = [
     path('add_user_toSection/<int:courseID>/<int:userID>', AddUserToSection.as_view()),
     path('delete_user_from_section/<int:courseID>/<int:userID>', RemoveUserFromSection.as_view()),
     path('user/<int:id>', ViewUser.as_view()),
+    path('editUser/<int:id>', EditUser.as_view()),
+    path('editUser/users.html', Users.as_view()),
     path('', Home.as_view())
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_URL)
