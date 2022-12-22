@@ -38,7 +38,11 @@
                             <td>{{ section.time }}</td>
                             <td>{{ section.assignedTA.user.first_name}}  {{section.assignedTA.user.last_name}}</td>
                             <td><a class="btn btn-primary" href="/assignCourseUser/{{ section.id }}">Assign User</a></td>
-                            <td><a class="btn btn-primary" href="#">Delete Section</a></td>
+                            <td><a class="btn btn-primary" href="assignCourseUser/{{ section.id }}">Assign User</a></td>
+                            <td><form method="post" action="/delete_section/{{ section.id }}" class="btn btn-primary">
+                                {% csrf_token %}
+                                <button type="submit" value="">Delete Section</button>
+                            </form></td>
                         </tr>
                     {% endfor %}
                     </tbody>
