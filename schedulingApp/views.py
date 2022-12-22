@@ -286,12 +286,14 @@ class EditUser(LoginRequiredMixin, View):
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class DeleteSection(View):
     def post(self, request, id):
-        request.delete()
-        return redirect('sections.html')
+        section = Section.objects.get(id=id)
+        section.delete()
+        return redirect('/sections.html')
 
 
 @method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
 class DeleteCourse(View):
     def post(self, request, id):
-        request.delete()
-        return redirect('sections.html')
+        course = Course.objects.get(id=id)
+        course.delete()
+        return redirect('/courses.html')

@@ -264,19 +264,19 @@ class Section(models.Model):
 
 
 class CourseToAssignmentEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
 
 class CourseToAssignedUserEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
+    assignedUser = models.ForeignKey(Profile, on_delete=models.CASCADE, null=False)
 
 
 class SectionToAssignmentEntry(models.Model):
-    section = models.ForeignKey(Section, on_delete=models.DO_NOTHING, null=False)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, null=False)
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
 
 
 class SectionToAssignedUserEntry(models.Model):
-    section = models.ForeignKey(Section, on_delete=models.DO_NOTHING, null=False)
-    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
+    section = models.ForeignKey(Section, on_delete=models.CASCADE, null=False)
+    assignedUser = models.ForeignKey(Profile, on_delete=models.CASCADE, null=False)
