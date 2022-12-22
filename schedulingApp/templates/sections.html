@@ -22,7 +22,7 @@
                         <th scope="col">Semester</th>
                         <th scope="col">Section Type</th>
                         <th scope="col">Section Time</th>
-                        <th scope="col">Assigned TA</th>
+                        <th scope="col">Assigned Users</th>
                         <!--Empty columns to keep buttons organized inside table-->
                         <th scope="col"></th>
                         <th scope="col"></th>
@@ -36,6 +36,11 @@
                             <td>{{ section.course.get_semester_display }}</td>
                             <td>{{ section.labType }}</td>
                             <td>{{ section.time }}</td>
+                            <td>
+                                {% for user in section.getUsersAssignedToSection %}
+                                    {{ user.user.first_name }} {{ user.user.last_name }}<br>
+                                {% endfor %}
+                            </td>
                             <td>{{ section.assignedTA.user.first_name}}  {{section.assignedTA.user.last_name}}</td>
                             <td><a class="btn btn-primary" href="/assignSectionUser/{{ section.id }}">Assign User</a></td>
                             <td><a class="btn btn-primary" href="#">Delete Section</a></td>
