@@ -37,13 +37,13 @@
                             <td>{{ section.labType }}</td>
                             <td>{{ section.time }}</td>
                             <td>{{ section.assignedTA.user.first_name}}  {{section.assignedTA.user.last_name}}</td>
-                            <td><a class="btn btn-primary" href="assignCourseUser/{{ section.id }}">Assign User</a></td>
+                            <td><a class="btn btn-primary" href="/assignCourseUser/{{ section.id }}">Assign User</a></td>
                             <td><a class="btn btn-primary" href="#">Delete Section</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
-            <a class="btn btn-primary" href="addSection.html">Add Section</a>
+            <a class="btn btn-primary" href="/addSection.html">Add Section</a>
         </div>
     </div>
 </div>
