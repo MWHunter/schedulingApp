@@ -87,6 +87,48 @@ class Profile(models.Model):
     def setSkills(self, newSkills):
         self.skills = newSkills
 
+    def getLastName(self):
+        return self.user.last_name
+
+    def getEmailAddress(self):
+        return self.user.email
+
+    def getPassword(self):
+        return self.user.password
+
+    def getHomeAddress(self):
+        return self.homeAddress
+
+    def getPhoneNumber(self):
+        return self.phoneNumber
+
+    def getPermission(self):
+        return self.permission
+
+    def setUsername(self, newUsername):
+        self.user.username = newUsername
+        
+    def setFirstName(self, newFirstName):
+        self.user.first_name = newFirstName
+
+    def setLastName(self, newLastName):
+        self.user.last_name = newLastName
+
+    def setEmailAddress(self, newEmailAddress):
+        self.user.email = newEmailAddress
+
+    def setPassword(self, newPassword):
+        self.user.password = newPassword
+
+    def setHomeAddress(self, newHomeAddress):
+        self.homeAddress = newHomeAddress
+
+    def setPhoneNumber(self, newPhoneNumber):
+        self.phoneNumber = newPhoneNumber
+
+    def setPermission(self, newPermission):
+        self.permission = newPermission
+    
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
