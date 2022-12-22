@@ -34,7 +34,7 @@ urlpatterns = [
     path('assignSectionUser/<int:id>', AssignSectionUser.as_view()),
     path('add_user_to_course/<int:courseID>/<int:userID>', AddUserToCourse.as_view()),
     path('delete_user_from_course/<int:courseID>/<int:userID>', RemoveUserFromCourse.as_view()),
-    path('add_user_toSection/<int:courseID>/<int:userID>', AddUserToSection.as_view()),
+    path('add_user_to_section/<int:courseID>/<int:userID>', AddUserToSection.as_view()),
     path('delete_user_from_section/<int:courseID>/<int:userID>', RemoveUserFromSection.as_view()),
     path('user/<int:id>', ViewUser.as_view()),
     path('editUser/<int:id>', EditUser.as_view()),

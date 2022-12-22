@@ -221,19 +221,19 @@ class Section(models.Model):
     title = models.CharField(max_length=32)
     labType = models.CharField(max_length=10, choices=LAB_TYPE, default=LAB)
 
-    def getUsersAssignedToCourse(self):
+    def getUsersAssignedToSection(self):
         users = []
         for entry in SectionToAssignedUserEntry.objects.filter(section=self):
             users.append(entry.assignedUser)
         return users
 
     def addUserToSection(self, user):
-        entry = SectionToAssignedUserEntry(course=self, assignedUser=user)
+        entry = SectionToAssignedUserEntry(section=self, assignedUser=user)
         entry.full_clean()
         entry.save()
 
     def removeUserFromSection(self, user):
-        entry = SectionToAssignedUserEntry.objects.get(course=self, assignedUser=user)
+        entry = SectionToAssignedUserEntry.objects.get(section=self, assignedUser=user)
         entry.delete()
 
 

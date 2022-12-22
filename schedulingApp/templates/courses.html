@@ -30,8 +30,11 @@
                         <tr>
                             <td>{{ course.title }}</td>
                             <td>{{ course.get_semester_display }}</td>
-                            <!--TODO update this table row to display assigned instructor(s)-->
-                            <td>{{ course.get_semester_display }}</td>
+                            <td>
+                                {% for user in course.getUsersAssignedToCourse %}
+                                    {{ user.user.first_name }} {{ user.user.last_name }}<br>
+                                {% endfor %}
+                            </td>
                             <td><a class="btn btn-primary" href="/assignCourseUser/{{ course.id }}">Assign User</a></td>
                             <td><form method="post" action="/delete_course/{{ course.id }}" class="btn btn-primary">
                                 {% csrf_token %}
