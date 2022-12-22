@@ -28,15 +28,64 @@ class Profile(models.Model):
     # 555 555 5555, 555 555 5555 55
     phoneNumber = models.CharField(max_length=24, validators=[RegexValidator(phoneRegex)])
     homeAddress = models.CharField(max_length=64)
+    skills = models.CharField(max_length=4096, blank=True)
     permission = models.CharField(max_length=16,
                                   choices=PermissionLevel,
                                   default=TA)
 
     def getUsername(self):
         return self.user.username
-    
+
     def getFirstName(self):
         return self.user.first_name
+
+    def getLastName(self):
+        return self.user.last_name
+
+    def getEmailAddress(self):
+        return self.user.email
+
+    def getPassword(self):
+        return self.user.password
+
+    def getHomeAddress(self):
+        return self.homeAddress
+
+    def getPhoneNumber(self):
+        return self.phoneNumber
+
+    def getPermission(self):
+        return self.permission
+
+    def getSkills(self):
+        return self.skills
+
+    def setUsername(self, newUsername):
+        self.username = newUsername
+
+    def setFirstName(self, newFirstName):
+        self.user.first_name = newFirstName
+
+    def setLastName(self, newLastName):
+        self.user.last_name = newLastName
+
+    def setEmailAddress(self, newEmailAddress):
+        self.user.email = newEmailAddress
+
+    def setPassword(self, newPassword):
+        self.user.set_password(newPassword)
+
+    def setHomeAddress(self, newHomeAddress):
+        self.homeAddress = newHomeAddress
+
+    def setPhoneNumber(self, newPhoneNumber):
+        self.phoneNumber = newPhoneNumber
+
+    def setPermission(self, newPermission):
+        self.permission = newPermission
+
+    def setSkills(self, newSkills):
+        self.skills = newSkills
 
     def getLastName(self):
         return self.user.last_name
@@ -115,6 +164,21 @@ class Course(models.Model):
     title = models.CharField(max_length=32)
     semester = models.CharField(max_length=4, choices=SEMESTER_CHOICES, default=FALL22)
 
+    def getUsersAssignedToCourse(self):
+        users = []
+        for entry in CourseToAssignedUserEntry.objects.filter(course=self):
+            users.append(entry.assignedUser)
+        return users
+
+    def addUserToCourse(self, user):
+        entry = CourseToAssignedUserEntry(course=self, assignedUser=user)
+        entry.full_clean()
+        entry.save()
+
+    def removeUserFromCourse(self, user):
+        entry = CourseToAssignedUserEntry.objects.get(course=self, assignedUser=user)
+        entry.delete()
+
     def setTitle(self, newtitle):
         self.title = newtitle
 
@@ -127,42 +191,50 @@ class Course(models.Model):
     def getSemester(self):
         return self.semester
 
+    def addProfile(self, newprofile):
+        pass
+
+    def removeProfile(self, remprofile):
+        pass
+
+    def getAllProfiles(self):
+        pass
+
 
 class Assignment(models.Model):
     title = models.CharField(max_length=64)
     description = models.CharField(max_length=65536)
-    isTaAssignment = models.BooleanField
 
 
-class CourseToAssignmentEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
-
-
-class CourseToAssignedTAEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
-    numAllowedLabs = models.IntegerField
-
-
-class CourseToProfessorEntry(models.Model):
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
-    assignedProfessor = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
-
-
-class LabSection(models.Model):
+class Section(models.Model):
     LAB = "lab"
     LECTURE = "lecture"
+    DISCUSSION = "discussion"
     LAB_TYPE = [
         (LAB, "LAB"),
         (LECTURE, "LECTURE"),
+        (DISCUSSION, "DISCUSSION")
     ]
 
     course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
     time = models.CharField(max_length=16)
     title = models.CharField(max_length=32)
-    assignedTA = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
-    labType = models.CharField(max_length=8, choices=LAB_TYPE, default=LAB)
+    labType = models.CharField(max_length=10, choices=LAB_TYPE, default=LAB)
+
+    def getUsersAssignedToCourse(self):
+        users = []
+        for entry in SectionToAssignedUserEntry.objects.filter(section=self):
+            users.append(entry.assignedUser)
+        return users
+
+    def addUserToSection(self, user):
+        entry = SectionToAssignedUserEntry(course=self, assignedUser=user)
+        entry.full_clean()
+        entry.save()
+
+    def removeUserFromSection(self, user):
+        entry = SectionToAssignedUserEntry.objects.get(course=self, assignedUser=user)
+        entry.delete()
 
 
     # getters/setters
@@ -189,3 +261,22 @@ class LabSection(models.Model):
         if newTA is None:
             raise ValueError("Cannot set assignedTA to None")
         self.assignedTA = newTA
+
+
+class CourseToAssignmentEntry(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
+
+class CourseToAssignedUserEntry(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
+
+
+class SectionToAssignmentEntry(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.DO_NOTHING, null=False)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, null=False)
+
+
+class SectionToAssignedUserEntry(models.Model):
+    section = models.ForeignKey(Section, on_delete=models.DO_NOTHING, null=False)
+    assignedUser = models.ForeignKey(Profile, on_delete=models.DO_NOTHING, null=False)
