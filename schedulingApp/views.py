@@ -135,6 +135,9 @@ class AddUserToSection(View):
     def post(self, request, courseID, userID):
         section = Section.objects.get(id=courseID)
         user = Profile.objects.get(id=userID)
+        #ensures professor is assigned to course before posting
+        if (user.permission == Profile.PROFESSOR) and (user in section.course.getUsersAssignedToCourse() == False):
+            return redirect("/")
         section.addUserToSection(user)
         return redirect(request.META['HTTP_REFERER'])
 
@@ -188,7 +191,7 @@ class AssignSectionUser(View):
     def get(self, request, id):
         section = Section.objects.get(id=id)
         profile = Profile.objects.get(user=request.user)
-        courseUsers = section.course.getUsersAssignedToCourse()
+        courseAssignedUsers = section.course.getUsersAssignedToCourse()
         if profile.permission == Profile.ADMIN:
             return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
                                                               "course": section,
@@ -196,16 +199,15 @@ class AssignSectionUser(View):
                                                               "users": Profile.objects.filter(
                                                                   Q(permission=Profile.TA) | Q(
                                                                       permission=Profile.PROFESSOR))})
-        elif profile.permission == Profile.PROFESSOR and profile in courseUsers:
+        elif profile.permission == Profile.PROFESSOR and profile in courseAssignedUsers:
             return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
                                                               "course": section,
                                                               "courseUsers": section.getUsersAssignedToSection(),
                                                               "users": Profile.objects.filter(
                                                                   Q(permission=Profile.TA) | Q(
-                                                                      permission=Profile.PROFESSOR))})
+                                                                      user=request.user))})
         else:
             return redirect("/")
-
 
 
 # We don't care if a user has logged in for this one
