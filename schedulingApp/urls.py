@@ -32,10 +32,10 @@ urlpatterns = [
     path('addSection.html', AddSection.as_view()),
     path('assignCourseUser/<int:id>', AssignCourseUser.as_view()),
     path('assignSectionUser/<int:id>', AssignSectionUser.as_view()),
-    path('add_user_to_course/<int:id>', AddUserToCourse.as_view()),
-    path('delete_user_from_course/<int:id>', RemoveUserFromCourse.as_view()),
-    path('add_user_toSection/<int:id>', AddUserToSection.as_view()),
-    path('delete_user_from_section/<int:id>', RemoveUserFromSection.as_view()),
+    path('add_user_to_course/<int:courseID>/<int:userID>', AddUserToCourse.as_view()),
+    path('delete_user_from_course/<int:courseID>/<int:userID>', RemoveUserFromCourse.as_view()),
+    path('add_user_toSection/<int:courseID>/<int:userID>', AddUserToSection.as_view()),
+    path('delete_user_from_section/<int:courseID>/<int:userID>', RemoveUserFromSection.as_view()),
     path('user/<int:id>', ViewUser.as_view()),
     path('', Home.as_view())
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_URL)
