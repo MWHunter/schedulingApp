@@ -87,7 +87,7 @@ class TestGetters(TestCase):
 
     #def test_getTAValid(self):
     #    self.assertEqual(self.section.getTA(), self.profile, msg="getTA does not return proper TA")
-    
+
     def test_addDiscussionSection(self):
         s = Section(course=self.course, title=self.title, time=self.time, labType=Section.DISCUSSION)
         self.assertEqual(s.course, self.course, msg="Course not properly set in constructor")
@@ -162,7 +162,7 @@ class TestSetters(TestCase):
         with self.assertRaises(ValueError, msg="Setting TA to invalid value should raise ValueError"):
             self.section.setTA(None)
 
-            
+
 class TestUserAssignmentInstructor(TestCase):
     course = None
     title = "CS361-01"
@@ -223,3 +223,25 @@ class TestUserAssignmentInstructor(TestCase):
                         msg="TA needs to be assigned to section before testing adding duplicate")
         self.assertRaises(ValidationError, self.section.addUserToSection(user=self.profile),
                           msg="Allows assignment of same TA twice to one section")
+
+class DeleteSection(TestCase):
+    section = None
+    title = "CS361-01"
+    profile = None
+    section = None
+
+    def test_sectionNotFound(self):
+        c = Section.objects.get(self.section)
+        self.assertRaises(NameError, c.delete(),
+            msg="Trying to delete nonexistent course should throw NameError")
+
+    def setUp(self) -> None:
+        course = Course(title="CS361", semester="FA22")
+        self.profile = Profile(user=User(), phoneNumber="123456789", homeAddress="Here", permission=Profile.TA)
+        self.section = Section(course=self.course, title=self.title, assignedTA=self.profile)
+
+    def test_validSection(self):
+        Course.objects.filter(self.section).delete()
+
+        self.assertFalse(self.section.getTitle() == self.title,
+                         msg="Title for deleted section should no longer exist.")
