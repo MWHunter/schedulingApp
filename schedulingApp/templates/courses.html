@@ -33,7 +33,10 @@
                             <!--TODO update this table row to display assigned instructor(s)-->
                             <td>{{ course.get_semester_display }}</td>
                             <td><a class="btn btn-primary" href="/assignCourseUser/{{ course.id }}">Assign User</a></td>
-                            <td><a class="btn btn-primary" href="#">Delete Course</a></td>
+                            <td><form method="post" action="/delete_course/{{ course.id }}" class="btn btn-primary">
+                                {% csrf_token %}
+                                <button type="submit" value="">Delete Course</button>
+                            </form></td>
                         </tr>
                     {% endfor %}
                     </tbody>
