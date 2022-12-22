@@ -281,3 +281,17 @@ class EditUser(LoginRequiredMixin, View):
             error = str(e)
             return render(request, "editUser.html", {"error": error, "profile": Profile.objects.get(user=request.user),
                                                      "roles": Profile.PermissionLevel})
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class DeleteSection(View):
+    def post(self, request, id):
+        request.delete()
+        return redirect('sections.html')
+
+
+@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+class DeleteCourse(View):
+    def post(self, request, id):
+        request.delete()
+        return redirect('sections.html')
