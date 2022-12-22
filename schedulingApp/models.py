@@ -216,7 +216,7 @@ class Section(models.Model):
         (DISCUSSION, "DISCUSSION")
     ]
 
-    course = models.ForeignKey(Course, on_delete=models.DO_NOTHING, null=False)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
     time = models.CharField(max_length=16)
     title = models.CharField(max_length=32)
     labType = models.CharField(max_length=10, choices=LAB_TYPE, default=LAB)
