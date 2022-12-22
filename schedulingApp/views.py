@@ -193,21 +193,16 @@ class AssignSectionUser(View):
         profile = Profile.objects.get(user=request.user)
         courseAssignedUsers = section.course.getUsersAssignedToCourse()
         if profile.permission == Profile.ADMIN:
-            return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
-                                                              "course": section,
-                                                              "courseUsers": section.getUsersAssignedToSection(),
-                                                              "users": Profile.objects.filter(
-                                                                  Q(permission=Profile.TA) | Q(
-                                                                      permission=Profile.PROFESSOR))})
+            users = Profile.objects.filter(Q(permission=Profile.TA) | Q(permission=Profile.PROFESSOR))
         elif profile.permission == Profile.PROFESSOR and profile in courseAssignedUsers:
-            return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
-                                                              "course": section,
-                                                              "courseUsers": section.getUsersAssignedToSection(),
-                                                              "users": Profile.objects.filter(
-                                                                  Q(permission=Profile.TA) | Q(
-                                                                      user=request.user))})
+            users = Profile.objects.filter(Q(permission=Profile.TA) | Q(user=request.user))
         else:
             return redirect("/")
+
+        return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
+                                                              "course": section,
+                                                              "courseUsers": section.getUsersAssignedToSection(),
+                                                              "users": users})
 
 
 # We don't care if a user has logged in for this one
