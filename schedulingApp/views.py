@@ -10,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views import View
 
 from schedulingApp.models import Profile, Course, Section, SectionToAssignedUserEntry
-from schedulingApp.permissionTests import user_has_admin_permission
+from schedulingApp.permissionTests import user_has_admin_permission, user_has_professor_permission
 
 
 class Login(View):
@@ -130,16 +130,16 @@ class RemoveUserFromCourse(View):
         return redirect(request.META['HTTP_REFERER'])
 
 
-@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+@method_decorator(user_passes_test(user_has_professor_permission), name='dispatch')
 class AddUserToSection(View):
     def post(self, request, courseID, userID):
         section = Section.objects.get(id=courseID)
         user = Profile.objects.get(id=userID)
-        section.addUserToCourse(user)
+        section.addUserToSection(user)
         return redirect(request.META['HTTP_REFERER'])
 
 
-@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+@method_decorator(user_passes_test(user_has_professor_permission), name='dispatch')
 class RemoveUserFromSection(View):
     def post(self, request, courseID, userID):
         section = Section.objects.get(id=courseID)
@@ -183,16 +183,29 @@ class AddSection(View):
                                                        "tas": Profile.objects.filter(permission=Profile.TA),
                                                        "courses": Course.objects.all()})
 
-
-@method_decorator(user_passes_test(user_has_admin_permission), name='dispatch')
+@method_decorator(user_passes_test(user_has_professor_permission), name='dispatch')
 class AssignSectionUser(View):
     def get(self, request, id):
         section = Section.objects.get(id=id)
-        return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
-                                                          "course": section,
-                                                          "courseUsers": section.getUsersAssignedToCourse(),
-                                                          "users": Profile.objects.filter(Q(permission=Profile.TA) | Q(
-                                                              permission=Profile.PROFESSOR))})
+        profile = Profile.objects.get(user=request.user)
+        courseUsers = section.course.getUsersAssignedToCourse()
+        if profile.permission == Profile.ADMIN:
+            return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
+                                                              "course": section,
+                                                              "courseUsers": section.getUsersAssignedToSection(),
+                                                              "users": Profile.objects.filter(
+                                                                  Q(permission=Profile.TA) | Q(
+                                                                      permission=Profile.PROFESSOR))})
+        elif profile.permission == Profile.PROFESSOR and profile in courseUsers:
+            return render(request, "assignSectionUser.html", {"profile": Profile.objects.get(user=request.user),
+                                                              "course": section,
+                                                              "courseUsers": section.getUsersAssignedToSection(),
+                                                              "users": Profile.objects.filter(
+                                                                  Q(permission=Profile.TA) | Q(
+                                                                      permission=Profile.PROFESSOR))})
+        else:
+            return redirect("/")
+
 
 
 # We don't care if a user has logged in for this one
