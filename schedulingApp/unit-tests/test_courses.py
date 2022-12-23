@@ -109,21 +109,6 @@ class EditCourse(TestCase):
                          msg="Should update to the same name as a different course as long as semesters are different.")
 
 
-class DeleteCourse(TestCase):
-    theCourse = Course(title="CS361", semester="FA22")
-
-    def test_courseNotFound(self):
-        with self.assertRaises(NameError, msg="Trying to delete nonexistent course should throw NameError"):
-            del self.myCourse
-
-    def test_validAndExistingCourse(self):
-        del self.theCourse
-        with self.assertRaises(NameError, msg="Title for deleted course should no longer exist."):
-            self.theCourse.getTitle()
-        with self.assertRaises(NameError, msg="Semester for deleted course should no longer exist."):
-            self.theCourse.getSemester()
-
-
 class AssignUsers(TestCase):
     course = None
     title = "CS361"
@@ -191,15 +176,10 @@ class DeleteCourse(TestCase):
 
     def setUp(self) -> None:
         self.course = Course(title=self.title, semester=self.semester)
-        user1 = User()
-        self.profileTA = Profile(user=user1, phoneNumber="123456789", homeAddress="Here", permission=Profile.TA)
-        user2 = User()
-        self.profileProfessor = Profile(user=user2, phoneNumber="987654321", homeAddress="There", permission=Profile.PROFESSOR)
-        user3 = User()
-        self.profileAdmin = Profile(user=user3, phoneNumber="57890123", homeAddress="Where", permission=Profile.ADMIN)
+        self.course.save()
 
     def test_validSection(self):
-        Course.objects.filter(self.course).delete()
+        self.course.delete()
 
-        self.assertFalse(self.course.getTitle() == self.title,
-                         msg="Title for deleted course should no longer exist.")
+        with self.assertRaises(Course.DoesNotExist):
+            Course.objects.get(title=self.title)

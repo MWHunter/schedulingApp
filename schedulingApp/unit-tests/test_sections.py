@@ -224,24 +224,20 @@ class TestUserAssignmentInstructor(TestCase):
         self.assertRaises(ValidationError, self.section.addUserToSection(user=self.profile),
                           msg="Allows assignment of same TA twice to one section")
 
-class DeleteSection(TestCase):
-    section = None
-    title = "CS361-01"
-    profile = None
-    section = None
 
-    def test_sectionNotFound(self):
-        c = Section.objects.get(self.section)
-        self.assertRaises(NameError, c.delete(),
-            msg="Trying to delete nonexistent course should throw NameError")
+class DeleteSection(TestCase):
+    title = "CS361-01"
+    semester = "FA22"
+    section = None
 
     def setUp(self) -> None:
-        course = Course(title="CS361", semester="FA22")
-        self.profile = Profile(user=User(), phoneNumber="123456789", homeAddress="Here", permission=Profile.TA)
-        self.section = Section(course=self.course, title=self.title, assignedTA=self.profile)
+        self.course = Course(title=self.title, semester=self.semester)
+        self.course.save()
+        self.section = Section(title=self.title, time="2:00", labType=Section.DISCUSSION, course=self.course)
+        self.section.save()
 
     def test_validSection(self):
-        Course.objects.filter(self.section).delete()
+        self.section.delete()
 
-        self.assertFalse(self.section.getTitle() == self.title,
-                         msg="Title for deleted section should no longer exist.")
+        with self.assertRaises(Section.DoesNotExist):
+            Section.objects.get(title=self.title)
