@@ -169,11 +169,6 @@ class DeleteCourse(TestCase):
     profileProfessor = None
     profileAdmin = None
 
-    def test_courseNotFound(self):
-        c = Course.objects.get(self.course)
-        self.assertRaises(NameError, c.delete(),
-            msg="Trying to delete nonexistent course should throw NameError")
-
     def setUp(self) -> None:
         self.course = Course(title=self.title, semester=self.semester)
         self.course.save()
