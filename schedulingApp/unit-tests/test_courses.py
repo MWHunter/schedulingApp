@@ -161,20 +161,4 @@ class AssignUsers(TestCase):
         with self.assertRaises(ValueError, msg="Removing not contained profile should raise ValueError"):
             self.course.removeProfile(self.profilePRO)
 
-class DeleteCourse(TestCase):
-    course = None
-    title = "CS361"
-    semester = "FA22"
-    profileTA = None
-    profileProfessor = None
-    profileAdmin = None
 
-    def setUp(self) -> None:
-        self.course = Course(title=self.title, semester=self.semester)
-        self.course.save()
-
-    def test_validSection(self):
-        self.course.delete()
-
-        with self.assertRaises(Course.DoesNotExist):
-            Course.objects.get(title=self.title)

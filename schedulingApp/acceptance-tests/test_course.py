@@ -75,3 +75,22 @@ class TestAddCourseUnsuccessful(TestCase):
 
         resp = self.cl.post("/addCourse.html", {"newCourseTitle": "CS500", "newCourseSemester": Course.FALL22}, follow=True)
         self.assertEqual(resp.request['PATH_INFO'], "/", "Allows Instructor to create a course, should bounce user to homepage")
+
+
+class DeleteCourse(TestCase):
+    course = None
+    title = "CS361"
+    semester = "FA22"
+    profileTA = None
+    profileProfessor = None
+    profileAdmin = None
+
+    def setUp(self) -> None:
+        self.course = Course(title=self.title, semester=self.semester)
+        self.course.save()
+
+    def test_validSection(self):
+        self.course.delete()
+
+        with self.assertRaises(Course.DoesNotExist):
+            Course.objects.get(title=self.title)
